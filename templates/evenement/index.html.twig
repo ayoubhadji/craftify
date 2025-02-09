@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evenement index{% endblock %}
+
+{% block body %}
+<div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" style="background-image: url('{{ asset('img/mainphoto.png') }}'); background-size: cover; background-position: center; min-height: 500px;">
+    <div class="container text-center pt-5 pb-3">
+        <h1 class="display-4 text-white animated slideInDown mb-3">event list</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+        </nav>
+    </div>
+</div>
+
+    <h1>Evenement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Date_debut</th>
+                <th>Date_fin</th>
+                <th>Lieu</th>
+                <th>Capacite</th>
+                <th>Type_evenement</th>
+                <th>Prix</th>
+                <th>Organisateur</th>
+                <th>Image</th>
+                <th>Date_creation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evenement in evenements %}
+            <tr>
+                <td>{{ evenement.id }}</td>
+                <td>{{ evenement.nom }}</td>
+                <td>{{ evenement.description }}</td>
+                <td>{{ evenement.dateDebut ? evenement.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ evenement.dateFin ? evenement.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ evenement.lieu }}</td>
+                <td>{{ evenement.capacite }}</td>
+                <td>{{ evenement.typeEvenement }}</td>
+                <td>{{ evenement.prix }}</td>
+                <td>{{ evenement.organisateur }}</td>
+                <td>{{ evenement.image }}</td>
+                <td>{{ evenement.dateCreation ? evenement.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_evenement_show', {'id': evenement.id}) }}">show</a>
+                    <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="13">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_evenement_new') }}">Create new</a>
+{% endblock %}
