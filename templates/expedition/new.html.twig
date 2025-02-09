@@ -1,0 +1,11 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}New Expedition{% endblock %}
+
+{% block body %}
+    <h1>Create new Expedition</h1>
+
+    {{ include('expedition/_form.html.twig') }}
+
+    <a href="{{ path('app_expedition_index') }}">back to list</a>
+{% endblock %}

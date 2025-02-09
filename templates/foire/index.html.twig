@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Foire index{% endblock %}
+
+{% block body %}
+    <h1>Foire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Date_debut</th>
+                <th>Date_fin</th>
+                <th>Lieu</th>
+                <th>Capacite_max</th>
+                <th>Created_at</th>
+                <th>Prix</th>
+                <th>Rate</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for foire in foires %}
+            <tr>
+                <td>{{ foire.id }}</td>
+                <td>{{ foire.nom }}</td>
+                <td>{{ foire.description }}</td>
+                <td>{{ foire.dateDebut ? foire.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ foire.dateFin ? foire.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ foire.lieu }}</td>
+                <td>{{ foire.capaciteMax }}</td>
+                <td>{{ foire.createdAt ? foire.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ foire.prix }}</td>
+                <td>{{ foire.rate }}</td>
+                <td>
+                    <a href="{{ path('app_foire_show', {'id': foire.id}) }}">show</a>
+                    <a href="{{ path('app_foire_edit', {'id': foire.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_foire_new') }}">Create new</a>
+{% endblock %}

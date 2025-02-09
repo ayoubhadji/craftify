@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aventurier{% endblock %}
+
+{% block body %}
+    <h1>Aventurier</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ aventurier.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom_code</th>
+                <td>{{ aventurier.nomCode }}</td>
+            </tr>
+            <tr>
+                <th>Quetes_terminees</th>
+                <td>{{ aventurier.quetesTerminees }}</td>
+            </tr>
+            <tr>
+                <th>Artefact_possede</th>
+                <td>{{ aventurier.artefactPossede }}</td>
+            </tr>
+            <tr>
+                <th>Compagne_creatif</th>
+                <td>{{ aventurier.compagneCreatif }}</td>
+            </tr>
+            <tr>
+                <th>Badge_legendaire</th>
+                <td>{{ aventurier.badgeLegendaire }}</td>
+            </tr>
+            <tr>
+                <th>Signe_distinctif</th>
+                <td>{{ aventurier.signeDistinctif }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_aventurier_index') }}">back to list</a>
+
+    <a href="{{ path('app_aventurier_edit', {'id': aventurier.id}) }}">edit</a>
+
+    {{ include('aventurier/_delete_form.html.twig') }}
+{% endblock %}

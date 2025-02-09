@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post index{% endblock %}
+
+{% block body %}
+    <h1>Post index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type_post</th>
+                <th>Contenu</th>
+                <th>Media_url</th>
+                <th>Date_publication</th>
+                <th>Tranche_dage</th>
+                <th>Nmb_like</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for post in posts %}
+            <tr>
+                <td>{{ post.id }}</td>
+                <td>{{ post.typePost }}</td>
+                <td>{{ post.contenu }}</td>
+                <td>{{ post.mediaUrl }}</td>
+                <td>{{ post.datePublication ? post.datePublication|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ post.trancheDage }}</td>
+                <td>{{ post.nmbLike }}</td>
+                <td>
+                    <a href="{{ path('app_post_show', {'id': post.id}) }}">show</a>
+                    <a href="{{ path('app_post_edit', {'id': post.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_post_new') }}">Create new</a>
+{% endblock %}
