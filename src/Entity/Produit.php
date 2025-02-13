@@ -1,12 +1,16 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
+#[Vich\Uploadable]
 class Produit
 {
     #[ORM\Id]
@@ -33,13 +37,23 @@ class Produit
     private ?int $stock = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: "L'URL de l'image n'est pas valide.")]
     private ?string $img_url = null;
+
+    #[Vich\UploadableField(mapping: "produit_images", fileNameProperty: "img_url")]
+    #[Assert\File(
+        maxSize: "100M",
+        mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+        mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG, WebP)."
+    )]
+    private ?File $img_file = null;
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?User $id_artisan = null;
 
-    // Getters et setters
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    // Getters and setters
 
     public function getId(): ?int
     {
@@ -95,10 +109,23 @@ class Produit
         return $this->img_url;
     }
 
-    public function setImgUrl(?string $img_url): static
+    public function setImgUrl(?string $img_url): self
     {
         $this->img_url = $img_url;
         return $this;
+    }
+
+    public function getImgFile(): ?File
+    {
+        return $this->img_file;
+    }
+
+    public function setImgFile(?File $img_file = null): void
+    {
+        $this->img_file = $img_file;
+        if ($img_file) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
     public function getIdArtisan(): ?User
@@ -112,4 +139,3 @@ class Produit
         return $this;
     }
 }
-

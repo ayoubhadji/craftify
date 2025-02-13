@@ -32,7 +32,7 @@ class CommentaireType extends AbstractType
             ])
             ->add('id_post', EntityType::class, [
                 'class' => Post::class,
-                'choice_label' => 'titre', // Assuming 'titre' is the title of the post
+                'choice_label' => 'id', // Assuming 'titre' is the title of the post
                 'label' => 'Post associé',
             ])
             ->add('id_user', EntityType::class, [

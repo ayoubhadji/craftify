@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base2.html.twig' %}
 
 {% block title %}Produit index{% endblock %}
 
@@ -9,7 +9,6 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Id_produit</th>
                 <th>Nom</th>
                 <th>Description</th>
                 <th>Prix</th>
@@ -22,7 +21,6 @@
         {% for produit in produits %}
             <tr>
                 <td>{{ produit.id }}</td>
-                <td>{{ produit.idProduit }}</td>
                 <td>{{ produit.nom }}</td>
                 <td>{{ produit.description }}</td>
                 <td>{{ produit.prix }}</td>

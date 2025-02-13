@@ -10,9 +10,9 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ProduitType extends AbstractType
 {
@@ -48,10 +48,13 @@ class ProduitType extends AbstractType
                     'placeholder' => 'Quantité en stock',
                 ],
             ])
-            ->add('img_url', UrlType::class, [
+            ->add('img_file', VichImageType::class, [
                 'required' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'image_uri' => true,
                 'attr' => [
-                    'placeholder' => 'URL de l’image du produit',
+                    'placeholder' => 'Choisissez une image',
                 ],
             ])
             ->add('id_artisan', EntityType::class, [
