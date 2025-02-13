@@ -35,13 +35,13 @@ class ParticipationType extends AbstractType
             ])
             ->add('id_user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'username', // Affiche le nom d'utilisateur au lieu de l'ID
+                'choice_label' => 'nom', // Affiche le nom d'utilisateur au lieu de l'ID
                 'required' => true,
                 'placeholder' => 'Sélectionnez un utilisateur',
             ])
             ->add('id_evenement', EntityType::class, [
                 'class' => Evenement::class,
-                'choice_label' => 'titre', // Affiche le titre de l'événement au lieu de l'ID
+                'choice_label' => 'nom', // Affiche le titre de l'événement au lieu de l'ID
                 'required' => true,
                 'placeholder' => 'Sélectionnez un événement',
             ]);

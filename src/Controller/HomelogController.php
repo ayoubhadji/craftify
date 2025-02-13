@@ -6,23 +6,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class HomeController extends AbstractController
+final class HomelogController extends AbstractController
 {
-    
-    #[Route('/home', name: 'homepage')]
-    public function home(): Response
+    #[Route('/homelog', name: 'homelog')]
+    public function index(): Response
     {
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'UserController',
-        ]);
+        return $this->render('homelog/index.html.twig');
     }
 
     #[Route('/About', name: 'About')]
     public function about(): Response
     {
-        return $this->render('About/About.html.twig', [
-            'controller_name' => 'UserController',
-        ]);
+        return $this->render('About/About.html.twig');
     }
 
 
@@ -31,5 +26,6 @@ final class HomeController extends AbstractController
     {
         return $this->render('error/notfound.html.twig' );
     }
+
 
 }

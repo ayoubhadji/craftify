@@ -1,20 +1,29 @@
-{% extends 'base.html.twig' %}
+{% extends 'baselog.html.twig' %}
 {% block body %}
  {# About Start #}
  <!-- Page Header Start -->
-    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" style="background-image: url('{{ asset('img/mainphoto.png') }}'); 
-    background-size: cover; background-position: center; min-height: 500px;">
-        <div class="container text-center pt-5 pb-3">
-            <h1 class="display-4 text-white animated slideInDown mb-3">About Us</h1>
-            <nav aria-label="breadcrumb animated slideInDown">
-                <ol class="breadcrumb justify-content-center mb-0">
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
-                    <li class="breadcrumb-item text-primary active" aria-current="page">About</li>
-                </ol>
-            </nav>
-        </div>
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" 
+     style="background-image: url('{{ asset('img/test1.JPG') }}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 500px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;">
+    
+    <div class="container">
+        <h1 class="display-1 text-white animated slideInDown mb-3">About Us</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">About</li>
+            </ol>
+        </nav>
     </div>
+</div>
+
     <!-- Page Header End -->
     <div class="container-xxl py-6">
         <div class="container">
@@ -22,10 +31,10 @@
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="row img-twice position-relative h-100">
                         <div class="col-6">
-                            <img class="img-fluid rounded" src="{{ asset('img/about-1.jpg') }}" alt="About Image 1">
+                            <img class="img-fluid rounded" src="{{ asset('img/aboutus1.jpg') }}" alt="About Image 1">
                         </div>
                         <div class="col-6 align-self-end">
-                            <img class="img-fluid rounded" src="{{ asset('img/about-2.jpg') }}" alt="About Image 2">
+                            <img class="img-fluid rounded" src="{{ asset('img/aboutus2.jpg') }}" alt="About Image 2">
                         </div>
                     </div>
                 </div>

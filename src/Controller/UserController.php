@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
+
+
 
 #[Route('/user')]
 final class UserController extends AbstractController
@@ -21,6 +23,35 @@ final class UserController extends AbstractController
             'users' => $userRepository->findAll(),
         ]);
     }
+
+   #[Route('/registre', name: 'app_register', methods: ['GET', 'POST'])]
+public function register(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $user = new User();
+    $form = $this->createForm(UserType::class, $user);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted()) {
+        if ($form->isValid()) {
+            // Sauvegarde de l'utilisateur
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // Ajout du message de succès
+            $this->addFlash('success', 'Registration successful!');
+            return $this->redirectToRoute('app_login');
+        } else {
+            // Si le formulaire est invalide, affiche un message d'erreur global
+            $this->addFlash('error', 'Please correct the errors in the form.');
+        }
+    }
+
+    return $this->render('user/register.html.twig', [
+        'user' => $user,
+        'form' => $form->createView(),
+    ]);
+}
+
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -78,4 +109,8 @@ final class UserController extends AbstractController
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    
+
 }

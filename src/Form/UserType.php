@@ -48,9 +48,11 @@ class UserType extends AbstractType
             ])
             ->add('date_naissance', DateType::class, [
                 'label' => 'Date de naissance',
+                'required' => true ,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
             ])
+
             ->add('tel', TelType::class, [
                 'label' => 'Téléphone',
                 'attr' => ['class' => 'form-control'],

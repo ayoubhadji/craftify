@@ -28,7 +28,7 @@ class User
     #[Assert\Length(max: 255)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 6, max: 255)]
     private ?string $code = null;
@@ -43,15 +43,17 @@ class User
     #[Assert\Choice(['Homme', 'Femme'])]
     private ?string $sexe = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\NotBlank(message: "La date de naissance est requise.")]
-    #[Assert\Type(\DateTimeInterface::class, message: "Format de date invalide.")]
-    #[Assert\LessThan("today", message: "La date de naissance doit être antérieure à aujourd'hui.")]
-    private ?\DateTimeInterface $date_naissance = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)] 
+    #[Assert\NotBlank(message: "La date de naissance est requise.")] 
+    #[Assert\Type(\DateTimeInterface::class, message: "Format de date invalide.")] 
+    #[Assert\LessThan("today", message: "La date de naissance doit être antérieure à aujourd'hui.")] 
+    private \DateTimeInterface $date_naissance;
+    
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank]
     private ?\DateTimeInterface $date_join = null;
+
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank]
@@ -101,6 +103,7 @@ class User
         $this->posts = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->date_join = new \DateTime();
+        $this->date_naissance = new \DateTime();
     }
 
     public function getId(): ?int
@@ -192,12 +195,12 @@ class User
         return $this;
     }
 
-    public function getTel(): ?int
+    public function getTel(): ?string
     {
         return $this->tel;
     }
 
-    public function setTel(int $tel): static
+    public function setTel(string $tel): static
     {
         $this->tel = $tel;
 
