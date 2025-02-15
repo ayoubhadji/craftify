@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -96,4 +97,43 @@ final class AuthController extends AbstractController
             'user' => $user
         ]);
     }
+
+
+        #[Route('/editprofile', name: 'profil_edit', methods: ['GET', 'POST'])]
+    public function editprofile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer l'utilisateur connecté depuis la session
+        $user = $request->getSession()->get('user');
+
+        // Vérifier si un utilisateur est connecté
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Récupération de l'utilisateur depuis la base de données (évite les problèmes d'objet détaché)
+        $user = $entityManager->getRepository(User::class)->find($user->getId());
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login'); // Sécurité supplémentaire
+        }
+
+        // Créer le formulaire
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            // Mettre à jour l'utilisateur dans la session
+            $request->getSession()->set('user', $user);
+
+            return $this->redirectToRoute('app_profile');
+        }
+
+        return $this->render('auth/mod.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

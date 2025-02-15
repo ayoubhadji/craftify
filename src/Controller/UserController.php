@@ -17,10 +17,21 @@ use Symfony\Component\Routing\Annotation\Route;
 final class UserController extends AbstractController
 {
     #[Route(name: 'app_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository ,Request $request): Response
     {
+        // Nombre d'utilisateurs par page
+        $page = $request->query->getInt('page', 1); // Page courante (par défaut la page 1)
+        $limit = 3; // 3 utilisateurs par page
+
+        // Récupérer la liste paginée des utilisateurs
+        $users = $userRepository->findBy([], null, $limit, ($page - 1) * $limit);
+        $totalUsers = count($userRepository->findAll());
+        $totalPages = ceil($totalUsers / $limit);
+
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $users,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
 

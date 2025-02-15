@@ -17,7 +17,11 @@
                   </div>
                   <div class="d-md-flex row m-0 quick-action-btns" role="group" aria-label="Quick action buttons">
                     <div class="col-sm-6 col-md-3 p-3 text-center btn-wrapper">
-                      <button type="button" class="btn px-0"> <i class="icon-user me-2"></i> Add Client</button>
+                      <form action="{{ path('app_user_new') }}" method="get">
+                          <button type="submit" class="btn px-0">
+                              <i class="icon-user me-2"></i> Ajout Utilisateurs
+                          </button>
+                      </form>
                     </div>
                     <div class="col-sm-6 col-md-3 p-3 text-center btn-wrapper">
                       <button type="button" class="btn px-0"><i class="icon-docs me-2"></i> Create Quote</button>

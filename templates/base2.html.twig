@@ -24,6 +24,11 @@
     <link rel="stylesheet" href="{{ asset('back/css/vertical-light-layout/style.css') }}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{ asset('back/images/favicon.png') }}" />
+
+
+    <!--pour crafty in dashbord-->
+    <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+
     {% endblock %}
 </head>
 
@@ -54,7 +59,9 @@
 
 
     <div class="navbar-menu-wrapper d-flex align-items-center">
-        <h1 class="mb-10 font-weight-medium d-none d-lg-flex">Welcome Craftify dashboard!</h1>
+         <a href="{{ path('app_back') }}" class="navbar-brand ms-4 ms-lg-0">
+            <h1 class="text-primary m-5">Craftify</h1>
+        </a>
         <ul class="navbar-nav navbar-nav-right">
             <form class="search-form d-none d-md-block" action="#">
                 <i class="icon-magnifier"></i>
@@ -109,7 +116,7 @@
                         <p class="font-weight-light text-muted mb-0">Admin@Admin.com</p>
                     </div>
                     <a class="dropdown-item"><i class="dropdown-item-icon icon-user text-primary"></i> My Profile </a>
-                    <a class="dropdown-item href="{{ path('app_logout') }}"><i class="dropdown-item-icon icon-power text-primary"></i>Sign Out</a>
+                    <a class="dropdown-item" href="{{ path('app_logout') }}"><i class="dropdown-item-icon icon-power text-primary"></i>Sign Out</a>
                 </div>
             </li>
         </ul>
@@ -123,66 +130,61 @@
         <!-- Include the sidebar partial -->
 
 <div class="container-fluid page-body-wrapper">
-    <nav class="sidebar sidebar-offcanvas" id="sidebar">
-    <ul class="nav">
-        <li class="nav-item navbar-brand-mini-wrapper">
-            <a class="nav-link navbar-brand brand-logo-mini" href="{{ path('app_back') }}"><img src="{{ asset('back/images/logo0.png') }}" style="max-width: 70px; height: auto;" alt="logo" /></a>
+    <nav class="sidebar sidebar-offcanvas" id="sidebar" style="margin-left: -24px;">
+        <ul class="nav">
+            <li class="nav-item navbar-brand-mini-wrapper">
+                <a class="nav-link navbar-brand brand-logo-mini" href="{{ path('app_back') }}"><img src="{{ asset('back/images/logo0.png') }}" style="max-width: 70px; height: auto;" alt="logo" /></a>
+            </li>
+            <li class="nav-item nav-profile">
+                <a href="#" class="nav-link">
+                    <div class="profile-image">
+                        <img class="img-xs rounded-circle" src="{{ asset('back/images/faces/admin4.png') }}" alt="profile image">
+                        <div class="dot-indicator bg-success"></div>
+                    </div>
+                    <div class="text-wrapper">
+                        <p class="profile-name">Admin</p>
+                    </div>
+                    <div class="icon-container">
+                        <i class="icon-bubbles"></i>
+                        <div class="dot-indicator bg-danger"></div>
+                    </div>
+                </a>
+            </li>
+
+            <li class="nav-item nav-category">
+                <span class="nav-link">Dashboard</span>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_back') }}">
+                    <span class="menu-title">Dashboard</span>
+                    <i class="icon-screen-desktop menu-icon"></i>
+                </a>
+            </li>
+
+
+            <li class="nav-item nav-category"><span class="nav-link">Extra Pages</span></li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+                    <span class="menu-title">User Pages</span>
+                    <i class="icon-disc menu-icon"></i>
+                </a>
+            <div class="collapse" id="auth">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_user_index') }}"> all Users </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}"> Login </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_back') }}"> 404 </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_back') }}"> 500 </a>
+                    </li>
+                </ul>
+            </div>
         </li>
-        <li class="nav-item nav-profile">
-            <a href="#" class="nav-link">
-                <div class="profile-image">
-                    <img class="img-xs rounded-circle" src="{{ asset('back/images/faces/admin4.png') }}" alt="profile image">
-                    <div class="dot-indicator bg-success"></div>
-                </div>
-                <div class="text-wrapper">
-                    <p class="profile-name">Admin</p>
-                </div>
-                <div class="icon-container">
-                    <i class="icon-bubbles"></i>
-                    <div class="dot-indicator bg-danger"></div>
-                </div>
-            </a>
-        </li>
-        <li class="nav-item nav-category">
-            <span class="nav-link">Dashboard</span>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_back') }}">
-                <span class="menu-title">Dashboard</span>
-                <i class="icon-screen-desktop menu-icon"></i>
-            </a>
-        </li>
-
-
-        <li class="nav-item nav-category"><span class="nav-link">Extra Pages</span></li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                <span class="menu-title">User Pages</span>
-                <i class="icon-disc menu-icon"></i>
-            </a>
-    <div class="collapse" id="auth">
-        <ul class="nav flex-column sub-menu">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_user_new') }}"> new user </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_login') }}"> Login </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_register') }}"> Register </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_back') }}"> 404 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_back') }}"> 500 </a>
-            </li>
-        </ul>
-    </div>
-
-
-
-    </li>
 
         <li class="nav-item nav-category"><span class="nav-link">gestions</span></li>
 
@@ -250,7 +252,7 @@
                     <li class="nav-item"> <a class="nav-link" href="{{ path('app_back') }}">tutorieles</a></li>
                 </ul>
             </div>
-        </li>
+        </li>     
     </ul>
 </nav>
 
@@ -259,7 +261,7 @@
 {% endblock %}
 
 
- </main>
+</main>
 
 
 {% block footer %}

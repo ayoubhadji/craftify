@@ -27,17 +27,6 @@
 
                 <!-- Render the form -->
                 {{ include('user/_form.html.twig') }}
-                  <!-- Checkbox for Terms & Conditions -->
-                  <div class="form-check mb-4">
-                    <input type="checkbox" class="form-check-input" id="termsCheck" name="termsCheck" required>
-                    <label class="form-check-label text-muted" for="termsCheck">
-                      I agree to all <a href="#">Terms & Conditions</a>
-                    </label>
-                  </div>
-
-                 
-                
-
                 <!-- Display error message if form submission failed -->
                 {% if app.session.flashbag.has('error') %}
                   <div class="alert alert-danger mt-4">

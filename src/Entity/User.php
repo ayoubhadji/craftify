@@ -95,6 +95,10 @@ class User
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'id_user')]
     private Collection $commentaires;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $fiscal = null;
+
+
     public function __construct()
     {
         $this->produits = new ArrayCollection();
@@ -368,4 +372,17 @@ class User
 
         return $this;
     }
+
+    public function getFiscal(): ?string
+    {
+        return $this->fiscal;
+    }
+
+    public function setFiscal(?string $fiscal): static
+    {
+        $this->fiscal = $fiscal;
+
+        return $this;
+    }
+
 }

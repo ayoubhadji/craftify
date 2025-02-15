@@ -33,7 +33,6 @@ class UserType extends AbstractType
                 'label' => 'Rôle',
                 'choices' => [
                     'Utilisateur' => 'USER',
-                    'Administrateur' => 'ADMIN',
                     'Artisan' => 'ARTISAN',
                 ],
                 'attr' => ['class' => 'form-select'],

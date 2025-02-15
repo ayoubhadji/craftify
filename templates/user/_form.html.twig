@@ -17,7 +17,22 @@
         {% endfor %}
     </div>
     
-    <button class="btn btn-primary mt-3">
+    <button class="btn btn-gold mt-3">
         {{ button_label|default('Enregistrer') }}
     </button>
 {{ form_end(form) }}
+{% block stylesheets %}
+    
+    <style>
+        /* Ajouter une couleur dorée pour le bouton */
+        .btn-gold {
+            background-color: rgb(158, 149, 20); /* Couleur or */
+            color: white; /* Texte blanc */
+            border: none; /* Enlever les bordures */
+        }
+
+        .btn-gold:hover {
+            background-color: rgb(255, 204, 0); /* Couleur or plus claire au survol */
+        }
+    </style>
+{% endblock %}
