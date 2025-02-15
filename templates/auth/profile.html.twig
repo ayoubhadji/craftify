@@ -1,54 +1,88 @@
-
 {% extends 'baselog.html.twig' %}
 
 {% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-    <h1>Mon Profil</h1>
+<!-- HEADER AVEC IMAGE DE FOND -->
+<div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" 
+     style="background-image: url('{{ asset('img/test1.JPG') }}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 500px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;">
+    
+    <div class="container">
+        <h1 class="display-1 text-white animated slideInDown mb-3">Profile</h1> 
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="#">Profile</a></li> 
+                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">Profile</li> 
+            </ol>
+        </nav>
+    </div>
+</div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ user.nom }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Code</th>
-                <td>{{ user.code }}</td>
-            </tr>
-            <tr>
-                <th>Role</th>
-                <td>{{ user.role }}</td>
-            </tr>
-            <tr>
-                <th>Sexe</th>
-                <td>{{ user.sexe }}</td>
-            </tr>
-            <tr>
-                <th>Date_naissance</th>
-                <td>{{ user.dateNaissance ? user.dateNaissance|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_join</th>
-                <td>{{ user.dateJoin ? user.dateJoin|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Tel</th>
-                <td>{{ user.tel }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ user.address }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <a href="{{ path('app_logout') }}">Se déconnecter</a>
+<!-- CONTENU DU PROFIL -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body text-center">
+                    <!-- IMAGE DE PROFIL -->
+                    <img src="{{ asset('img/avatar.png') }}" 
+                         alt="Photo de profil" 
+                         class="rounded-circle mb-3" 
+                         width="70" height="70">
+
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th>Nom</th>
+                                <td>{{ user.nom }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Code</th>
+                                <td>{{ user.code }}</td>
+                            </tr>
+                            <tr>
+                                <th>Role</th>
+                                <td>{{ user.role }}</td>
+                            </tr>
+                            <tr>
+                                <th>Sexe</th>
+                                <td>{{ user.sexe }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de naissance</th>
+                                <td>{{ user.dateNaissance ? user.dateNaissance|date('Y-m-d') : 'Non renseigné' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date d'inscription</th>
+                                <td>{{ user.dateJoin ? user.dateJoin|date('Y-m-d') : 'Non renseigné' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Téléphone</th>
+                                <td>{{ user.tel }}</td>
+                            </tr>
+                            <tr>
+                                <th>Adresse</th>
+                                <td>{{ user.address }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <a href="{{ path('profil_edit') }}" class="btn btn-danger">Modifier</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
