@@ -1,0 +1,68 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Post Index{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        <br><br><br><br>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">Latest Posts</h2>
+            <a href="{{ path('app_post_new') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus"></i> Create New Post
+            </a>
+        </div>
+
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}">
+                            <img src="{{ post.mediaUrl ? asset('uploads/posts/' ~ post.mediaUrl) : asset('images/default.jpg') }}" 
+                                class="card-img-top img-fluid rounded" alt="Post Image">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ path('app_post_show', {'id': post.id}) }}" class="text-decoration-none text-dark">
+                                    {{ post.typePost | capitalize }}
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted">
+                                {{ post.contenu|slice(0, 100) ~ (post.contenu|length > 100 ? '...' : '') }}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar-alt"></i> {{ post.datePublication ? post.datePublication|date('Y-m-d') : 'N/A' }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-comments"></i> {{ post.commentaires|length }} Comments
+                                </small>
+                            </div>
+                            <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary btn-sm mt-3">
+                                Read More <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        No posts found.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination-wrap d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

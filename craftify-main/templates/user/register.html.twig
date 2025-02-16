@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Stellar Admin</title>
+
+    <link rel="stylesheet" href="{{ asset('back/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('back/vendors/flag-icon-css/css/flag-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('back/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('back/css/vertical-light-layout/style.css') }}">
+    <link rel="shortcut icon" href="{{ asset('back/images/favicon.png') }}" />
+  </head>
+
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth">
+          <div class="row flex-grow">
+            <div class="col-lg-8 mx-auto">
+              <div class="auth-form-light text-left p-5">
+                <div class="brand-logo">
+                  <img src="{{ asset('back/images/logo0.png') }}" alt="logo" class="logo-dark" style="max-width: 70px; height: auto;" />
+                </div>
+                <h4>New here?</h4>
+                <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
+
+                <!-- Render the form -->
+                {{ include('user/_form.html.twig') }}
+                  <!-- Checkbox for Terms & Conditions -->
+                  <div class="form-check mb-4">
+                    <input type="checkbox" class="form-check-input" id="termsCheck" name="termsCheck" required>
+                    <label class="form-check-label text-muted" for="termsCheck">
+                      I agree to all <a href="#">Terms & Conditions</a>
+                    </label>
+                  </div>
+
+                 
+                
+
+                <!-- Display error message if form submission failed -->
+                {% if app.session.flashbag.has('error') %}
+                  <div class="alert alert-danger mt-4">
+                    {% for message in app.session.flashbag.get('error') %}
+                      <p>{{ message }}</p>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                <div class="text-center mt-4 font-weight-light">
+                  Already have an account? <a href="{{ path('app_login') }}" class="text-primary">Login</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{{ asset('back/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('back/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('back/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('back/js/misc.js') }}"></script>
+    <script src="{{ asset('back/js/settings.js') }}"></script>
+    <script src="{{ asset('back/js/todolist.js') }}"></script>
+  </body>
+</html>

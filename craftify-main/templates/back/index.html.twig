@@ -1,0 +1,190 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Craftify Dashboard{% endblock %}
+
+{% block body %}
+
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper">
+            <!-- Quick Action Toolbar Starts-->
+    <div class="row quick-action-toolbar">
+              <div class="col-md-12 grid-margin">
+                <div class="card">
+                  <div class="card-header d-block d-md-flex">
+                    <h5 class="mb-0">Quick Actions</h5>
+                    <p class="ms-auto mb-0">How are your active users trending overtime?<i class="icon-bulb"></i></p>
+                  </div>
+                  <div class="d-md-flex row m-0 quick-action-btns" role="group" aria-label="Quick action buttons">
+                    <div class="col-sm-6 col-md-3 p-3 text-center btn-wrapper">
+                      <button type="button" class="btn px-0"> <i class="icon-user me-2"></i> Add Client</button>
+                    </div>
+                    <div class="col-sm-6 col-md-3 p-3 text-center btn-wrapper">
+                      <button type="button" class="btn px-0"><i class="icon-docs me-2"></i> Create Quote</button>
+                    </div>
+                    <div class="col-sm-6 col-md-3 p-3 text-center btn-wrapper">
+                      <button type="button" class="btn px-0"><i class="icon-folder me-2"></i> Enter Payment</button>
+                    </div>
+                    <div class="col-sm-6 col-md-3 p-3 text-center btn-wrapper">
+                      <button type="button" class="btn px-0"><i class="icon-book-open me-2"></i>Create Invoice</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    </div>
+            <!-- Quick Action Toolbar Ends-->
+
+
+   <div class="row">
+              <div class="col-xl-8 grid-margin stretch-card">
+                <div class="card sales-report-country">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-xl-4 pt-3">
+                        <div class="row">
+                          <div class="pb-xl-3 col-sm-6 col-xl-12 sales-activity">
+                            <p class="mb-1">Activations</p>
+                            <h1 class="font-weight-bold mb-0 text-info">156,123</h1>
+                            <p class="text-muted">Updated-6:16 pm</p>
+                          </div>
+                          <div class="pt-xl-3 col-sm-6 col-xl-12 sales-activity">
+                            <p class="mb-0">Net Revenue</p>
+                            <h1 class="font-weight-bold mb-0 text-primary">331,520</h1>
+                            <p class="text-muted pb-0">Updated-5:14 pm</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xl-8">
+                        <div id="dashboard-vmap" class="vector-map"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    </div>
+
+
+
+
+    <div class="row">
+              <div class="col-md-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row income-expense-summary-chart-text">
+                      <div class="col-xl-4">
+                        <h5>Income And Expenses Summary</h5>
+                        <p class="small text-muted">A comparison of people who mark themselves of their ineterest from the date range given above. Learn more.</p>
+                      </div>
+                      <div class=" col-md-3 col-xl-2">
+                        <p class="income-expense-summary-chart-legend"> <span style="border-color: #6469df"></span> Total Income </p>
+                        <h3>$ 1,766.00</h3>
+                      </div>
+                      <div class="col-md-3 col-xl-2">
+                        <p class="income-expense-summary-chart-legend"> <span style="border-color: #37ca32"></span> Total Expense </p>
+                        <h3>$ 5,698.30</h3>
+                      </div>
+                      <div class="col-md-6 col-xl-4 d-flex align-items-center">
+                        <div class="input-group ms-auto" id="income-expense-summary-chart-daterange">
+                          <div class="inpu-group-prepend input-group-text"><i class="icon-calendar"></i></div>
+                          <input type="text" class="form-control">
+                          <div class="input-group-prepend input-group-text"><i class="icon-arrow-down"></i></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row income-expense-summary-chart mt-3">
+                      <div class="col-md-12">
+                        <div class="ct-chart" id="income-expense-summary-chart"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    </div>
+
+
+
+
+
+    <div class="row">
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card social-card card-colored twitter-card">
+                  <div class="card-body d-flex flex-wrap align-items-center justify-content-center">
+                    <i class="icon-social-twitter flex-shrink-0"></i>
+                    <div class="wrapper ms-3">
+                      <h5 class="mb-0">Twitter Followers</h5>
+                      <h1 class="mb-0">3200+</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card social-card card-colored facebook-card">
+                  <div class="card-body d-flex flex-wrap align-items-center justify-content-center">
+                    <i class="icon-social-facebook flex-shrink-0"></i>
+                    <div class="wrapper ms-3">
+                      <h5 class="mb-0">facebook likes</h5>
+                      <h1 class="mb-0">1500+</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card social-card card-colored instagram-card">
+                  <div class="card-body d-flex flex-wrap align-items-center justify-content-center">
+                    <i class="icon-social-instagram flex-shrink-0"></i>
+                    <div class="wrapper ms-3">
+                      <h5 class="mb-0">Instagram Posts</h5>
+                      <h1 class="mb-0">2320+</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    </div>
+
+
+
+
+    
+
+
+
+    <div class="row">
+              <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+                <div class="card sessions-progress-bar-card">
+                  <div class="card-header">
+                    <h4>Sessions by Countries</h4>
+                  </div>
+                  
+
+                </div>
+              </div>
+
+              <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+                <div class="card dashboard-inline-datepicker datepicker-custom">
+                  <div class="card-body">
+                    <div id="dashboard-inline-datepicker"></div>
+                  </div>
+                </div>
+              </div>
+
+              
+              <div class="col-xl-4 grid-margin stretch-card">
+                <div class="card quick-status-card">
+                  <div class="card-body">
+                    <h4 class="card-title">Quick Status</h4>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div id="circle-progress-1"></div>
+                      </div>
+                      <div class="col-md-6">
+                        <div id="circle-progress-2"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+</div>
+          <!-- content-wrapper ends -->
+{% endblock %}

@@ -1,0 +1,43 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <!-- Card container for better layout -->
+                <div class="card shadow-sm border-light rounded">
+                    <div class="card-body">
+                        <!-- Heading -->
+                        <h1 class="text-center mb-4">Edit Commentaire</h1>
+
+                        <!-- Form fields -->
+                        <div class="row">
+                            {% for field in form %}
+                                {% if field.vars.name != '_token' %}
+                                    <div class="col-md-12 mb-3">
+                                        <div class="form-group">
+                                            {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                                            
+                                            {# Display errors in red if any #}
+                                            {% if field.vars.errors|length > 0 %}
+                                                <div class="text-danger mt-1">
+                                                    {{ form_errors(field) }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary w-100">
+                                {{ button_label|default('Enregistrer') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}

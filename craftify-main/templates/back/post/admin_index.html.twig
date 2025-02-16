@@ -1,0 +1,45 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Admin - Posts{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <!-- Use the correct route for the link -->
+                        <a href="{{ path('admin_post_show', {'id': post.id}) }}">
+                            <img src="{{ post.mediaUrl ? asset('uploads/posts/' ~ post.mediaUrl) : asset('images/default.jpg') }}" 
+                                class="card-img-top img-fluid rounded" alt="Post Image">
+                        </a>
+                        <div class="card-body">
+                            
+                            <p class="card-text text-muted">
+                                {{ post.contenu|slice(0, 100) ~ (post.contenu|length > 100 ? '...' : '') }}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar-alt"></i> {{ post.datePublication ? post.datePublication|date('Y-m-d') : 'N/A' }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-comments"></i> {{ post.commentaires|length }} Comments
+                                </small>
+                            </div>
+                            <!-- Correct the link to the correct route for 'Read More' -->
+                            <a href="{{ path('admin_post_show', {'id': post.id}) }}" class="btn btn-primary btn-sm mt-3">
+                                Read More <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        No posts found.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
