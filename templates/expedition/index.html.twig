@@ -1,51 +1,84 @@
-{% extends 'base.html.twig' %}
+{% extends 'base2.html.twig' %}
 
-{% block title %}Expedition index{% endblock %}
+{% block title %}Expéditions{% endblock %}
 
 {% block body %}
-    <h1>Expedition index</h1>
+    <div class="container mt-4">
+        <h2 class="text-center text-dark fw-bold">Liste des Expéditions</h2>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom_expedition</th>
-                <th>Univers</th>
-                <th>Cart_tresor_url</th>
-                <th>Quetes_dispo</th>
-                <th>Objet_magique</th>
-                <th>Gardien_artisanaux</th>
-                <th>Duree_mystique</th>
-                <th>Secret_cache</th>
-                <th>Relique_final</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for expedition in expeditions %}
-            <tr>
-                <td>{{ expedition.id }}</td>
-                <td>{{ expedition.nomExpedition }}</td>
-                <td>{{ expedition.univers }}</td>
-                <td>{{ expedition.cartTresorUrl }}</td>
-                <td>{{ expedition.quetesDispo }}</td>
-                <td>{{ expedition.objetMagique }}</td>
-                <td>{{ expedition.gardienArtisanaux }}</td>
-                <td>{{ expedition.dureeMystique }}</td>
-                <td>{{ expedition.secretCache }}</td>
-                <td>{{ expedition.reliqueFinal }}</td>
-                <td>
-                    <a href="{{ path('app_expedition_show', {'id': expedition.id}) }}">show</a>
-                    <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="11">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="d-flex justify-content-between mb-3">
+            <!-- Generate Expedition Button -->
+            <a href="{{ path('app_expedition_generate') }}" class="btn btn-primary">
+                <i class="fas fa-magic"></i> Générer une expédition
+            </a>
 
-    <a href="{{ path('app_expedition_new') }}">Create new</a>
+            <!-- Create New Expedition Button -->
+            <a href="{{ path('app_expedition_new') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Créer une nouvelle expédition
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Univers</th>
+                        <th>Carte</th>
+                        <th>Quêtes</th>
+                        <th>Objet Magique</th>
+                        <th>Gardien</th>
+                        <th>Durée</th>
+                        <th>Secret</th>
+                        <th>Relique</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for expedition in expeditions %}
+                    <tr>
+                        <td>{{ expedition.id }}</td>
+                        <td>{{ expedition.nomExpedition }}</td>
+                        <td>{{ expedition.univers }}</td>
+                        <td>
+                            <a href="{{ expedition.cartTresorUrl }}" target="_blank" class="text-primary text-decoration-none">
+                                {{ expedition.cartTresorUrl|slice(0, 20) }}...
+                            </a>
+                        </td>
+                        <td>{{ expedition.quetesDispo }}</td>
+                        <td>{{ expedition.objetMagique }}</td>
+                        <td>{{ expedition.gardienArtisanaux }}</td>
+                        <td>{{ expedition.dureeMystique }}</td>
+                        <td>{{ expedition.secretCache }}</td>
+                        <td>{{ expedition.reliqueFinale }}</td>
+                        <td>
+                            <a href="{{ path('app_expedition_show', {'id': expedition.id}) }}" 
+                               class="btn btn-info btn-sm text-white">
+                                <i class="fas fa-eye"></i> Voir
+                            </a>
+                            <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}" 
+                               class="btn btn-warning btn-sm text-dark">
+                                <i class="fas fa-edit"></i> Modifier
+                            </a>
+                            <form method="post" action="{{ path('app_expedition_delete', {'id': expedition.id}) }}" 
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette expédition ?');" 
+                                  class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ expedition.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="11" class="text-center text-muted">Aucune expédition trouvée</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 {% endblock %}

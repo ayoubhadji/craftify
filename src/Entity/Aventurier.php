@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\AventurierRepository;
@@ -45,11 +46,11 @@ class Aventurier
      * @var Collection<int, Expedition>
      */
     #[ORM\ManyToMany(targetEntity: Expedition::class, inversedBy: 'aventuriers')]
-    private Collection $id_expedition;
+    private Collection $expeditions;
 
     public function __construct()
     {
-        $this->id_expedition = new ArrayCollection();
+        $this->expeditions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,22 +127,22 @@ class Aventurier
     /**
      * @return Collection<int, Expedition>
      */
-    public function getIdExpedition(): Collection
+    public function getExpeditions(): Collection
     {
-        return $this->id_expedition;
+        return $this->expeditions;
     }
 
-    public function addIdExpedition(Expedition $idExpedition): static
+    public function addExpedition(Expedition $expedition): static
     {
-        if (!$this->id_expedition->contains($idExpedition)) {
-            $this->id_expedition->add($idExpedition);
+        if (!$this->expeditions->contains($expedition)) {
+            $this->expeditions->add($expedition);
         }
         return $this;
     }
 
-    public function removeIdExpedition(Expedition $idExpedition): static
+    public function removeExpedition(Expedition $expedition): static
     {
-        $this->id_expedition->removeElement($idExpedition);
+        $this->expeditions->removeElement($expedition);
         return $this;
     }
 }

@@ -1,13 +1,49 @@
 {% extends 'base2.html.twig' %}
 
-{% block title %}Edit Expedition{% endblock %}
+{% block title %}Modifier une Expédition{% endblock %}
 
 {% block body %}
-    <h1>Edit Expedition</h1>
+<div class="container mt-5">
+    <h2 class="text-center text-dark fw-bold mb-4">Modifier une Expédition</h2>
 
-    {{ include('expedition/_form.html.twig', {'button_label': 'Update'}) }}
+    <!-- Formulaire de modification -->
+    <div class="card shadow-lg p-5">
+        {{ include('expedition/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
 
-    <a href="{{ path('app_expedition_index') }}">back to list</a>
+    <!-- Boutons de navigation -->
+    <div class="d-flex justify-content-between mt-5">
+        <!-- Bouton Retour -->
+        <a href="{{ path('app_expedition_index') }}" class="btn btn-outline-secondary d-flex align-items-center">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+        </a>
 
-    {{ include('expedition/_delete_form.html.twig') }}
+        <!-- Formulaire de suppression avec confirmation -->
+        <div class="d-flex justify-content-end">
+            <form method="post" action="{{ path('app_expedition_delete', {'id': expedition.id}) }}" 
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette expédition ?');">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('expedition_delete_' ~ expedition.id) }}">
+                <button type="submit" class="btn btn-danger d-flex align-items-center p-2" 
+                        data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'expédition">
+                    <i class="fas fa-trash-alt me-2"></i> Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Vérifier si Bootstrap est chargé avant d'exécuter le script
+        if (window.bootstrap) {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        } else {
+            console.error('Bootstrap non chargé, les tooltips ne fonctionneront pas.')
+        }
+    </script>
+{% endblock %}
 {% endblock %}
