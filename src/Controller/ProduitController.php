@@ -15,6 +15,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ProduitController extends AbstractController
 {
     // Afficher tous les produits
+    #[Route('/proch', name: 'produit_back', methods: ['GET'])]
+    public function prosh(ProduitRepository $produitRepository): Response
+    {
+        return $this->render('produit/indexback.html.twig', [
+            'produits' => $produitRepository->findAll(),
+        ]);
+    }
+
+
+
     #[Route('/all', name: 'app_produit_index', methods: ['GET'])]
     public function allProducts(ProduitRepository $produitRepository): Response
     {
@@ -125,5 +135,35 @@ public function delete(Request $request, Produit $produit, EntityManagerInterfac
 
     return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
 }
+
+
+
+
+
+#[Route('/proch/{id}', name: 'produit_show_back', methods: ['GET'])]
+    public function showback(Produit $produit): Response
+    {
+        return $this->render('produit/showback.html.twig', [
+            'produit' => $produit,
+        ]);
+    }
+
+    #[Route('/proch/{id}/edit', name: 'produit_edit_back', methods: ['GET', 'POST'])]
+    public function editback(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ProduitType::class, $produit);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('produit_back', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('produit/editback.html.twig', [
+            'produit' => $produit,
+            'form' => $form,
+        ]);
+    }
 
 }

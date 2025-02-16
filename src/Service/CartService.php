@@ -27,38 +27,43 @@ class CartService
     }
 
     public function add(int $produitId, User $user): void
-    {
-        // Trouve le produit par son ID
-        $produit = $this->produitRepository->find($produitId);
-        if (!$produit || $produit->getStock() <= 0) {
-            throw new \Exception("Le produit n'existe pas ou est en rupture de stock.");
-        }
-    
-        // Vérifie si le produit est déjà dans le panier de l'utilisateur
-        $panier = $this->panierRepository->findOneBy([
-            'user'    => $user,
-            'produit' => $produit
-        ]);
-    
-        if ($panier) {
-            // Si le produit est déjà dans le panier, on augmente la quantité
-            if ($panier->getQuantity() < $produit->getStock()) { // Vérifie si le stock permet d'ajouter
-                $panier->setQuantity($panier->getQuantity() + 1);
-            } else {
-                throw new \Exception("Le produit est déjà dans le panier et le stock est insuffisant.");
-            }
-        } else {
-            // Si le produit n'est pas dans le panier, crée une nouvelle entrée
-            $panier = new Panier();
-            $panier->setUser($user);
-            $panier->setProduit($produit);
-            $panier->setQuantity(1);
-            $this->entityManager->persist($panier);
-        }
-    
-        // Sauvegarde les changements
-        $this->entityManager->flush();
+{
+    // Trouve le produit par son ID
+    $produit = $this->produitRepository->find($produitId);
+    if (!$produit || $produit->getStock() <= 0) {
+        throw new \Exception("Le produit n'existe pas ou est en rupture de stock.");
     }
+
+    // Vérifie si le produit est déjà dans le panier de l'utilisateur
+    $panier = $this->panierRepository->findOneBy([
+        'user'    => $user,
+        'produit' => $produit
+    ]);
+
+    // Ajout du dump pour voir ce qui est récupéré
+    //dump($produit, $user, $panier); die;
+
+    if ($panier) {
+        // Vérifie si on peut augmenter la quantité sans dépasser le stock
+        if ($panier->getQuantity() < $produit->getStock()) {
+            $panier->setQuantity($panier->getQuantity() + 1);
+        } else {
+            throw new \Exception("Stock insuffisant pour ajouter plus d'unités.");
+        }
+    } else {
+        // Création d'une nouvelle entrée Panier
+        $panier = new Panier();
+        $panier->setUser($user);
+        $panier->setProduit($produit);
+        $panier->setQuantity(1);
+        $this->entityManager->persist($panier);
+    }
+
+    // Toujours persister et flusher après modification
+    $this->entityManager->persist($panier);
+    $this->entityManager->flush();
+}
+
     
 
     public function remove(int $produitId, User $user): void
