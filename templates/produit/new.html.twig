@@ -1,8 +1,30 @@
-{% extends 'base2.html.twig' %}
+{% extends 'baselog.html.twig' %}
 
 {% block title %}New Produit{% endblock %}
 
 {% block body %}
+<div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" 
+     style="background-image: url('{{ asset('img/test1.JPG') }}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 500px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;">
+    
+    <div class="container">
+        <h1 class="display-1 text-white animated slideInDown mb-3">Produits</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">Produits</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
     <h1>Create new Produit</h1>
 
     {{ include('produit/_form.html.twig') }}

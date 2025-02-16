@@ -23,7 +23,7 @@ final class AuthController extends AbstractController
                 case 'USER':
                     return $this->redirectToRoute('homelog');
                 case 'ARTISAN':
-                    return $this->redirectToRoute('app_Dar');
+                    return $this->redirectToRoute('homelog');
                 case 'ADMIN':
                     return $this->redirectToRoute('app_back');
                 default:
@@ -56,7 +56,7 @@ final class AuthController extends AbstractController
                     case 'USER':
                         return $this->redirectToRoute('homelog');
                     case 'ARTISAN':
-                        return $this->redirectToRoute('app_Dar');
+                        return $this->redirectToRoute('homelog');
                     case 'ADMIN':
                         return $this->redirectToRoute('app_back');
                     default:
@@ -135,5 +135,6 @@ final class AuthController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
 }

@@ -56,12 +56,6 @@ class ProduitType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Choisissez une image',
                 ],
-            ])
-            ->add('id_artisan', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'nom', // Affichage du nom d'utilisateur
-                'required' => true,
-                'placeholder' => 'Sélectionnez un artisan',
             ]);
     }
 

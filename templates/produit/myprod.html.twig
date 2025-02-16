@@ -1,8 +1,9 @@
 {% extends 'baselog.html.twig' %}
 
-{% block title %}Edit Produit{% endblock %}
+{% block title %}Mes Produits{% endblock %}
 
 {% block body %}
+
 <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" 
      style="background-image: url('{{ asset('img/test1.JPG') }}'); 
             background-size: cover; 
@@ -24,13 +25,30 @@
         </nav>
     </div>
 </div>
-    <h1>Edit Produit</h1>
-<div class="text-center mt-4">
-    {{ include('produit/_form.html.twig', {'button_label': 'Update'}) }}
 
-<div class="text-center mt-4">
-        <a href="{{ path('app_produit_index') }}" class="btn btn-success">back to list</a>
+<div class="container my-5">
+    <h1 class="text-center">Mes Produits</h1>
+
+    <div class="row">
+        {% for produit in produits %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="{{ asset('uploads/images/' ~ (produit.imgUrl ?: 'default.jpg')) }}" alt="{{ produit.nom }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ produit.nom }}</h5>
+                        <p class="card-text">{{ produit.description|slice(0, 100) }}...</p>
+                        <p class="fw-bold">{{ produit.prix }} €</p>
+                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-primary">Voir</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center">
+                <p>Aucun produit trouvé.</p>
+            </div>
+        {% endfor %}
     </div>
+</div>
 
-    {{ include('produit/_delete_form.html.twig') }}
+
 {% endblock %}
