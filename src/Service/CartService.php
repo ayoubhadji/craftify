@@ -27,55 +27,52 @@ class CartService
     }
 
     public function add(int $produitId, User $user): void
-{
-    // Trouve le produit par son ID
-    $produit = $this->produitRepository->find($produitId);
-    if (!$produit || $produit->getStock() <= 0) {
-        throw new \Exception("Le produit n'existe pas ou est en rupture de stock.");
-    }
-
-    // Vérifie si le produit est déjà dans le panier de l'utilisateur
-    $panier = $this->panierRepository->findOneBy([
-        'user'    => $user,
-        'produit' => $produit
-    ]);
-
-    // Ajout du dump pour voir ce qui est récupéré
-    //dump($produit, $user, $panier); die;
-
-    if ($panier) {
-        // Vérifie si on peut augmenter la quantité sans dépasser le stock
-        if ($panier->getQuantity() < $produit->getStock()) {
-            $panier->setQuantity($panier->getQuantity() + 1);
-        } else {
-            throw new \Exception("Stock insuffisant pour ajouter plus d'unités.");
+    {
+        $produit = $this->produitRepository->find($produitId);
+        if (!$produit || $produit->getStock() <= 0) {
+            throw new \LogicException("Le produit n'existe pas ou est en rupture de stock.");
         }
-    } else {
-        // Création d'une nouvelle entrée Panier
-        $panier = new Panier();
-        $panier->setUser($user);
-        $panier->setProduit($produit);
-        $panier->setQuantity(1);
-        $this->entityManager->persist($panier);
+
+        $panier = $this->panierRepository->findOneBy([
+            'user'    => $user,
+            'produit' => $produit,
+        ]);
+
+        $this->entityManager->beginTransaction();
+
+        try {
+            if ($panier) {
+                if ($panier->getQuantity() < $produit->getStock()) {
+                    $panier->setQuantity($panier->getQuantity() + 1);
+                } else {
+                    throw new \LogicException("Stock insuffisant pour ajouter plus d'unités.");
+                }
+            } else {
+                $panier = new Panier();
+                $panier->setUser($user);
+                $panier->setProduit($produit);
+                $panier->setQuantity(1);
+                $this->entityManager->persist($panier);
+            }
+
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (\Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
+        }
     }
-
-    // Toujours persister et flusher après modification
-    $this->entityManager->persist($panier);
-    $this->entityManager->flush();
-}
-
-    
 
     public function remove(int $produitId, User $user): void
     {
         $produit = $this->produitRepository->find($produitId);
         if (!$produit) {
-            throw new \Exception("Produit introuvable !");
+            throw new \LogicException("Produit introuvable !");
         }
 
         $panier = $this->panierRepository->findOneBy([
             'user'    => $user,
-            'produit' => $produit
+            'produit' => $produit,
         ]);
 
         if ($panier) {
@@ -84,37 +81,37 @@ class CartService
         }
     }
 
+    /**
+     * Récupère les articles du panier de l'utilisateur.
+     * @return Panier[]
+     */
     public function getCart(User $user): array
     {
         return $this->panierRepository->findBy(['user' => $user]);
     }
 
+    /**
+     * Calcule le total du panier.
+     */
     public function getTotal(User $user): float
     {
-        $total = 0;
-        foreach ($this->getCart($user) as $item) {
-            $total += $item->getProduit()->getPrix() * $item->getQuantity();
-        }
-        return $total;
+        return array_reduce($this->getCart($user), function ($total, Panier $item) {
+            return $total + ($item->getProduit()->getPrix() * $item->getQuantity());
+        }, 0);
     }
 
-    public function clearCartAfterOrder(User $user): void
+    /**
+     * Vide le panier de l'utilisateur.
+     */
+    public function clearCart(User $user): void
     {
         $cartItems = $this->panierRepository->findBy(['user' => $user]);
-        foreach ($cartItems as $item) {
-            $this->entityManager->remove($item);
+
+        if (!empty($cartItems)) {
+            foreach ($cartItems as $item) {
+                $this->entityManager->remove($item);
+            }
+            $this->entityManager->flush();
         }
-        $this->entityManager->flush();
     }
-
-    public function clearCart(User $user): void
-{
-    $cartItems = $this->panierRepository->findBy(['user' => $user]);
-
-    foreach ($cartItems as $item) {
-        $this->entityManager->remove($item);
-    }
-
-    $this->entityManager->flush();
-}
 }
