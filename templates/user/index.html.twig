@@ -1,0 +1,201 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">list des users</h1>
+
+    <div class="table-container">
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Code</th>
+                    <th>Role</th>
+                    <th>Sexe</th>
+                    <th>Date Naissance</th>
+                    <th>Date Join</th>
+                    <th>Tel</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.nom }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.code }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.sexe }}</td>
+                    <td>{{ user.dateNaissance ? user.dateNaissance|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ user.dateJoin ? user.dateJoin|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ user.tel }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>
+                        <li><a href="{{ path('app_user_show', {'id': user.id}) }}" class="action-btn show-btn">Show</a></li>
+                        <li><a href="{{ path('app_user_edit', {'id': user.id}) }}" class="action-btn edit-btn">Edit</a></li>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11" class="no-records">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {% if currentPage > 1 %}
+                <a href="{{ path('app_user_index', {'page': currentPage - 1}) }}" class="prev">Previous</a>
+            {% endif %}
+            
+            {% for page in 1..totalPages %}
+                <a href="{{ path('app_user_index', {'page': page}) }}" class="page-link {% if page == currentPage %}active{% endif %}">{{ page }}</a>
+            {% endfor %}
+
+            {% if currentPage < totalPages %}
+                <a href="{{ path('app_user_index', {'page': currentPage + 1}) }}" class="next">Next</a>
+            {% endif %}
+        </div>
+
+        <div class="create-btn-container">
+            <a href="{{ path('app_user_new') }}" class="create-btn">Create New</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }} 
+    <style>
+        /* Styles spécifiques à la page */
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: rgb(158, 149, 20);
+            background-color: rgb(0, 0, 0);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+        }
+         body {
+            background-color:rgba(50, 51, 36, 0.34); /* Gris clair */
+            color: #333; /* Texte en gris foncé pour un bon contraste */
+        }
+
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(248, 10, 10, 0.1);
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-table th {
+            background-color: rgb(158, 149, 20);
+            color: white;
+        }
+
+        .user-table tr:hover {
+            background-color: rgb(158, 149, 20);
+        }
+
+        .no-records {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+            padding: 20px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .show-btn {
+            background-color: rgb(158, 149, 20);
+        }
+
+        .edit-btn {
+            background-color: rgb(158, 149, 20);
+        }
+
+        .create-btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .create-btn {
+            background-color: rgb(158, 149, 20);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .create-btn:hover {
+            background-color: rgb(158, 149, 20);
+        }
+
+        /* Styles de la pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 10px;
+            margin: 0 5px;
+            text-decoration: none;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination a.active {
+            background-color: rgb(158, 149, 20);
+            color: white;
+        }
+
+        .pagination .prev, .pagination .next {
+            padding: 10px 20px;
+            background-color: rgb(158, 149, 20);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .pagination .prev:hover, .pagination .next:hover {
+            background-color: rgb(158, 149, 20);
+        }
+    </style>
+{% endblock %}

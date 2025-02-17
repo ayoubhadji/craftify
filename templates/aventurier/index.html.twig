@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aventurier index{% endblock %}
+
+{% block body %}
+    <h1>Aventurier index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom_code</th>
+                <th>Quetes_terminees</th>
+                <th>Artefact_possede</th>
+                <th>Compagne_creatif</th>
+                <th>Badge_legendaire</th>
+                <th>Signe_distinctif</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for aventurier in aventuriers %}
+            <tr>
+                <td>{{ aventurier.id }}</td>
+                <td>{{ aventurier.nomCode }}</td>
+                <td>{{ aventurier.quetesTerminees }}</td>
+                <td>{{ aventurier.artefactPossede }}</td>
+                <td>{{ aventurier.compagneCreatif }}</td>
+                <td>{{ aventurier.badgeLegendaire }}</td>
+                <td>{{ aventurier.signeDistinctif }}</td>
+                <td>
+                    <a href="{{ path('app_aventurier_show', {'id': aventurier.id}) }}">show</a>
+                    <a href="{{ path('app_aventurier_edit', {'id': aventurier.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_aventurier_new') }}">Create new</a>
+{% endblock %}
