@@ -1,46 +1,67 @@
-{% extends 'base.html.twig' %}
+{% extends 'base2.html.twig' %}
 
-{% block title %}Aventurier{% endblock %}
+{% block title %}Détails de l'Aventurier{% endblock %}
 
 {% block body %}
-    <h1>Aventurier</h1>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Détails de l'Aventurier</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ aventurier.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom_code</th>
-                <td>{{ aventurier.nomCode }}</td>
-            </tr>
-            <tr>
-                <th>Quetes_terminees</th>
-                <td>{{ aventurier.quetesTerminees }}</td>
-            </tr>
-            <tr>
-                <th>Artefact_possede</th>
-                <td>{{ aventurier.artefactPossede }}</td>
-            </tr>
-            <tr>
-                <th>Compagne_creatif</th>
-                <td>{{ aventurier.compagneCreatif }}</td>
-            </tr>
-            <tr>
-                <th>Badge_legendaire</th>
-                <td>{{ aventurier.badgeLegendaire }}</td>
-            </tr>
-            <tr>
-                <th>Signe_distinctif</th>
-                <td>{{ aventurier.signeDistinctif }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th scope="row">ID</th>
+                    <td>{{ aventurier.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Nom de code</th>
+                    <td>{{ aventurier.nomCode }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Quêtes terminées</th>
+                    <td>{{ aventurier.quetesTerminees }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Artefact possédé</th>
+                    <td>{{ aventurier.artefactPossede }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Compagnon créatif</th>
+                    <td>{{ aventurier.compagneCreatif }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Badge légendaire</th>
+                    <td>{{ aventurier.badgeLegendaire }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Signe distinctif</th>
+                    <td>{{ aventurier.signeDistinctif }}</td>
+                </tr>
+                <!-- Display expeditions -->
+                <tr>
+                    <th scope="row">Expéditions</th>
+                    <td>
+                        {% if aventurier.expeditions is not empty %}
+                            <ul>
+                                {% for expedition in aventurier.expeditions %}
+                                    <li>{{ expedition.nomExpedition }}</li>  <!-- Corrected 'nom' to 'nomExpedition' -->
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Aucune expédition associée.</p>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_aventurier_index') }}">back to list</a>
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('app_aventurier_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            <a href="{{ path('app_aventurier_edit', {'id': aventurier.id}) }}" class="btn btn-primary">Modifier</a>
+        </div>
 
-    <a href="{{ path('app_aventurier_edit', {'id': aventurier.id}) }}">edit</a>
-
-    {{ include('aventurier/_delete_form.html.twig') }}
+        <div class="mt-4">
+            <h4>Supprimer cet Aventurier :</h4>
+            {{ include('aventurier/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

@@ -2,3 +2,29 @@
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
     <button class="btn">Delete</button>
 </form>
+
+<style>
+    .btn-delete {
+        background-color: #D9534F; /* Red background */
+        padding: 12px 24px;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 25px; /* Smoother, rounded corners */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease-in-out, box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        margin-top: 50px; /* Add more space above the button to separate it from other buttons */
+    }
+
+    .btn-delete:hover {
+        background-color: #C9302C; /* Darker red on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
+    }
+
+    .btn-delete:active {
+        transform: translateY(0); /* Reset lift on click */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow on click */
+    }
+</style>

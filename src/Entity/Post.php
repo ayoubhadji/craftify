@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\PostRepository;
@@ -22,20 +21,18 @@ class Post
     #[Assert\NotNull(message: "L'utilisateur est obligatoire.")]
     private ?User $id_user = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le type de post est obligatoire.")]
-    #[Assert\Choice(choices: ['image', 'vidéo', 'texte'], message: "Le type de post doit être 'image', 'vidéo' ou 'texte'.")]
-    private ?string $type_post = null;
+    #[ORM\Column(name: "type_post", length: 255)]
+#[Assert\NotBlank(message: "Le type de post est obligatoire.")]
+#[Assert\Choice(choices: ['image', 'vidéo', 'texte'], message: "Le type de post doit être 'image', 'vidéo' ou 'texte'.")]
+private ?string $typePost = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Le contenu est obligatoire.")]
     #[Assert\Length(min: 10, minMessage: "Le contenu doit contenir au moins 10 caractères.")]
     private ?string $contenu = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\Url(message: "L'URL du média doit être valide.")]
-    #[Assert\NotBlank(message: "L'URL du média est obligatoire.")]
-    private ?string $media_url = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $mediaUrl = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull(message: "La date de publication est obligatoire.")]
@@ -55,11 +52,34 @@ class Post
      * @var Collection<int, Commentaire>
      */
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'id_post', orphanRemoval: true)]
-    private Collection $commentaires;
+    private Collection $commentaires;  // ✅ Fix: Add the missing property
 
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
+        $this->nmb_like = 0;
+        $this->date_publication = new \DateTime();
+    }
+    public function getDatePublication(): ?\DateTimeInterface
+    {
+        return $this->date_publication;
+    }
+
+    public function setDatePublication(\DateTimeInterface $date_publication): static
+    {
+        $this->date_publication = $date_publication;
+        return $this;
+    }
+
+    public function getNmbLike(): ?int
+    {
+        return $this->nmb_like;
+    }
+
+    public function setNmbLike(int $nmb_like): static
+    {
+        $this->nmb_like = $nmb_like;
+        return $this;
     }
 
     public function getId(): ?int
@@ -77,15 +97,14 @@ class Post
         $this->id_user = $id_user;
         return $this;
     }
-
     public function getTypePost(): ?string
     {
-        return $this->type_post;
+        return $this->typePost;
     }
-
-    public function setTypePost(string $type_post): static
+    
+    public function setTypePost(string $typePost): static
     {
-        $this->type_post = $type_post;
+        $this->typePost = $typePost;
         return $this;
     }
 
@@ -102,26 +121,17 @@ class Post
 
     public function getMediaUrl(): ?string
     {
-        return $this->media_url;
+        return $this->mediaUrl;
     }
 
-    public function setMediaUrl(string $media_url): static
+    public function setMediaUrl(?string $mediaUrl): self
     {
-        $this->media_url = $media_url;
+        $this->mediaUrl = $mediaUrl;
         return $this;
     }
 
-    public function getDatePublication(): ?\DateTimeInterface
-    {
-        return $this->date_publication;
-    }
-
-    public function setDatePublication(\DateTimeInterface $date_publication): static
-    {
-        $this->date_publication = $date_publication;
-        return $this;
-    }
-
+    
+   
     public function getTrancheDage(): ?string
     {
         return $this->tranche_dage;
@@ -133,18 +143,10 @@ class Post
         return $this;
     }
 
-    public function getNmbLike(): ?int
-    {
-        return $this->nmb_like;
-    }
-
-    public function setNmbLike(?int $nmb_like): static
-    {
-        $this->nmb_like = $nmb_like;
-        return $this;
-    }
+   
 
     /**
+     
      * @return Collection<int, Commentaire>
      */
     public function getCommentaires(): Collection
@@ -152,6 +154,9 @@ class Post
         return $this->commentaires;
     }
 
+    /**
+     * ✅ Add a comment to the post
+     */
     public function addCommentaire(Commentaire $commentaire): static
     {
         if (!$this->commentaires->contains($commentaire)) {
@@ -161,6 +166,9 @@ class Post
         return $this;
     }
 
+    /**
+     * ✅ Remove a comment from the post
+     */
     public function removeCommentaire(Commentaire $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
@@ -170,4 +178,8 @@ class Post
         }
         return $this;
     }
+
+    
 }
+
+

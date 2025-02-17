@@ -15,25 +15,20 @@ class Commentaire
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[Assert\NotNull(message: "Le commentaire doit être associé à un post.")]
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'commentaires')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Post $id_post = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[Assert\NotNull(message: "Le commentaire doit être associé à un utilisateur.")]
-    private ?User $id_user = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "id_user_id", referencedColumnName: "id", nullable: false)] // ✅ Explicitly define column mapping
+    private ?User $idUser = null;  // ✅ Use camelCase
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Le contenu du commentaire ne peut pas être vide.")]
-    #[Assert\Length(
-        min: 3,
-        minMessage: "Le commentaire doit contenir au moins {{ limit }} caractères."
-    )]
     private ?string $contenu = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull(message: "La date du commentaire est obligatoire.")]
-    #[Assert\Type("\DateTimeInterface", message: "La date du commentaire doit être une date valide.")]
     private ?\DateTimeInterface $date_commentaire = null;
 
     #[ORM\Column]
@@ -57,14 +52,14 @@ class Commentaire
         return $this;
     }
 
-    public function getIdUser(): ?User
+    public function getIdUser(): ?User  // ✅ Getter method for idUser
     {
-        return $this->id_user;
+        return $this->idUser;
     }
 
-    public function setIdUser(?User $id_user): static
+    public function setIdUser(?User $idUser): static  // ✅ Setter method for idUser
     {
-        $this->id_user = $id_user;
+        $this->idUser = $idUser;
         return $this;
     }
 

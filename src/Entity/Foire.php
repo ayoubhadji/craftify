@@ -85,9 +85,21 @@ class Foire
     )]
     private ?string $rate = null;
 
+    /**
+     * @var Collection<int, SliderItem>
+     */
+    #[ORM\OneToMany(targetEntity: SliderItem::class, mappedBy: 'foire')]
+    private Collection $sliderItems;
+
     public function __construct()
     {
         $this->art = new ArrayCollection();
+        $this->date_fin = new \DateTimeImmutable();
+        $this->date_debut = new \DateTimeImmutable();
+        $this->created_at = new \DateTimeImmutable();
+        $this->sliderItems = new ArrayCollection();
+        
+
     }
 
     public function getId(): ?int
@@ -219,6 +231,36 @@ class Foire
     public function setRate(string $rate): static
     {
         $this->rate = $rate;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SliderItem>
+     */
+    public function getSliderItems(): Collection
+    {
+        return $this->sliderItems;
+    }
+
+    public function addSliderItem(SliderItem $sliderItem): static
+    {
+        if (!$this->sliderItems->contains($sliderItem)) {
+            $this->sliderItems->add($sliderItem);
+            $sliderItem->setFoire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSliderItem(SliderItem $sliderItem): static
+    {
+        if ($this->sliderItems->removeElement($sliderItem)) {
+            // set the owning side to null (unless already changed)
+            if ($sliderItem->getFoire() === $this) {
+                $sliderItem->setFoire(null);
+            }
+        }
+
         return $this;
     }
 }

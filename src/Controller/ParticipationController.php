@@ -22,6 +22,14 @@ final class ParticipationController extends AbstractController
         ]);
     }
 
+    #[Route('/parfront', name: 'app_participation_front', methods: ['GET'])]
+    public function front(ParticipationRepository $participationRepository): Response
+    {
+        return $this->render('participation/front.html.twig', [
+            'participations' => $participationRepository->findAll(),
+        ]);
+    }
+
     #[Route('/new', name: 'app_participation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -43,16 +51,28 @@ final class ParticipationController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_participation_show', methods: ['GET'])]
-    public function show(Participation $participation): Response
+    public function show(ParticipationRepository $repository, string $id): Response
     {
+        $participation = $repository->find((int) $id);
+
+        if (!$participation) {
+            throw $this->createNotFoundException('Participation not found.');
+        }
+
         return $this->render('participation/show.html.twig', [
             'participation' => $participation,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_participation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Participation $participation, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ParticipationRepository $repository, string $id, EntityManagerInterface $entityManager): Response
     {
+        $participation = $repository->find((int) $id);
+
+        if (!$participation) {
+            throw $this->createNotFoundException('Participation not found.');
+        }
+
         $form = $this->createForm(ParticipationType::class, $participation);
         $form->handleRequest($request);
 
@@ -68,10 +88,16 @@ final class ParticipationController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_participation_delete', methods: ['POST'])]
-    public function delete(Request $request, Participation $participation, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'app_participation_delete', methods: ['POST'])]
+    public function delete(Request $request, ParticipationRepository $repository, string $id, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$participation->getId(), $request->getPayload()->getString('_token'))) {
+        $participation = $repository->find((int) $id);
+
+        if (!$participation) {
+            throw $this->createNotFoundException('Participation not found.');
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$participation->getId(), $request->request->get('_token'))) {
             $entityManager->remove($participation);
             $entityManager->flush();
         }

@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/aventurier')]
 final class AventurierController extends AbstractController
@@ -33,6 +33,10 @@ final class AventurierController extends AbstractController
             $entityManager->persist($aventurier);
             $entityManager->flush();
 
+            // Add a success message to the session
+            $this->addFlash('success', 'L\'aventurier a été créé avec succès !');
+
+            // Redirect to the index page after successful creation
             return $this->redirectToRoute('app_aventurier_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -71,11 +75,20 @@ final class AventurierController extends AbstractController
     #[Route('/{id}', name: 'app_aventurier_delete', methods: ['POST'])]
     public function delete(Request $request, Aventurier $aventurier, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$aventurier->getId(), $request->getPayload()->getString('_token'))) {
+        // Vérification du token CSRF
+        if ($this->isCsrfTokenValid('delete' . $aventurier->getId(), $request->request->get('_token'))) {
+            // Suppression de l'entité et enregistrement des changements
             $entityManager->remove($aventurier);
             $entityManager->flush();
+
+            // Message de confirmation
+            $this->addFlash('success', 'L\'aventurier a été supprimé avec succès.');
+        } else {
+            // Message d'erreur si le token n'est pas valide
+            $this->addFlash('error', 'Erreur de sécurité. Suppression échouée.');
         }
 
+        // Redirection vers la liste des aventuriers après la suppression
         return $this->redirectToRoute('app_aventurier_index', [], Response::HTTP_SEE_OTHER);
     }
 }

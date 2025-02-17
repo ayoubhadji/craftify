@@ -1,0 +1,17 @@
+
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Foires{% endblock %}
+
+{% block body %}
+    <h1>Foires</h1>
+    <ul>
+        {% for foire in foires %}
+            <li>
+                <a href="{{ path('foire_slider_items', {id: foire.id}) }}">{{ foire.nom }}</a>
+            </li>
+        {% else %}
+            <p>No foire found</p>
+        {% endfor %}
+    </ul>
+{% endblock %}
