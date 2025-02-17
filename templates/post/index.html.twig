@@ -1,45 +1,68 @@
-{% extends 'base.html.twig' %}
+{% extends 'baselog.html.twig' %}
 
-{% block title %}Post index{% endblock %}
+{% block title %}Post Index{% endblock %}
 
 {% block body %}
-    <h1>Post index</h1>
+    <div class="container mt-5 mb-5">
+        <br><br><br><br>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Type_post</th>
-                <th>Contenu</th>
-                <th>Media_url</th>
-                <th>Date_publication</th>
-                <th>Tranche_dage</th>
-                <th>Nmb_like</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for post in posts %}
-            <tr>
-                <td>{{ post.id }}</td>
-                <td>{{ post.typePost }}</td>
-                <td>{{ post.contenu }}</td>
-                <td>{{ post.mediaUrl }}</td>
-                <td>{{ post.datePublication ? post.datePublication|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ post.trancheDage }}</td>
-                <td>{{ post.nmbLike }}</td>
-                <td>
-                    <a href="{{ path('app_post_show', {'id': post.id}) }}">show</a>
-                    <a href="{{ path('app_post_edit', {'id': post.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">Latest Posts</h2>
+            <a href="{{ path('app_post_new') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus"></i> Create New Post
+            </a>
+        </div>
 
-    <a href="{{ path('app_post_new') }}">Create new</a>
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}">
+                            <img src="{{ post.mediaUrl ? asset('uploads/posts/' ~ post.mediaUrl) : asset('images/default.jpg') }}" 
+                                class="card-img-top img-fluid rounded" alt="Post Image">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ path('app_post_show', {'id': post.id}) }}" class="text-decoration-none text-dark">
+                                    {{ post.typePost | capitalize }}
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted">
+                                {{ post.contenu|slice(0, 100) ~ (post.contenu|length > 100 ? '...' : '') }}
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar-alt"></i> {{ post.datePublication ? post.datePublication|date('Y-m-d') : 'N/A' }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-comments"></i> {{ post.commentaires|length }} Comments
+                                </small>
+                            </div>
+                            <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary btn-sm mt-3">
+                                Read More <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        No posts found.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination-wrap d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 {% endblock %}

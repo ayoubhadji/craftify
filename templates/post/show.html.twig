@@ -1,46 +1,127 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Post{% endblock %}
+{% extends 'baselog.html.twig' %}
 
 {% block body %}
-    <h1>Post</h1>
+<br><br><br><br>
+<div class="container mt-5">
+    <!-- Post Details -->
+    <div class="card shadow-lg p-4 mb-4 text-center"> 
+        <div class="card-body">
+            <h1 class="card-title text-primary">{{ post.typePost }}</h1>
+            <p class="card-text text-muted">{{ post.contenu }}</p>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ post.id }}</td>
-            </tr>
-            <tr>
-                <th>Type_post</th>
-                <td>{{ post.typePost }}</td>
-            </tr>
-            <tr>
-                <th>Contenu</th>
-                <td>{{ post.contenu }}</td>
-            </tr>
-            <tr>
-                <th>Media_url</th>
-                <td>{{ post.mediaUrl }}</td>
-            </tr>
-            <tr>
-                <th>Date_publication</th>
-                <td>{{ post.datePublication ? post.datePublication|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Tranche_dage</th>
-                <td>{{ post.trancheDage }}</td>
-            </tr>
-            <tr>
-                <th>Nmb_like</th>
-                <td>{{ post.nmbLike }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <!-- Image Display -->
+            {% if post.mediaUrl %}
+                <div>
+                    <img src="{{ asset('uploads/posts/' ~ post.mediaUrl) }}" 
+                         alt="Post Image" class="img-fluid rounded shadow-sm"
+                         style="max-width: 600px; display: block; margin: auto;">
+                </div>
+            {% else %}
+                <p class="text-muted">No image uploaded.</p>
+            {% endif %}
+        </div>
+    </div>
 
-    <a href="{{ path('app_post_index') }}">back to list</a>
+    <!-- Edit Button -->
+    <div class="text-center mb-4">
+        <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit Post
+        </a>
+    </div>
 
-    <a href="{{ path('app_post_edit', {'id': post.id}) }}">edit</a>
+    <!-- Comments Section -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h3 class="card-title text-secondary">Comments</h3>
+        
+        {% for commentaire in post.commentaires %}
+    <div class="border rounded p-3 mb-3 bg-light">
+        <p>
+            <strong class="text-primary">{{ commentaire.idUser.nom }}</strong>
+            <span class="text-muted">({{ commentaire.dateCommentaire|date('Y-m-d H:i') }})</span>
+        </p>
+        <p>{{ commentaire.contenu }}</p>
+        <p class="text-muted">Likes: {{ commentaire.nmbLike }}</p>
 
-    {{ include('post/_delete_form.html.twig') }}
+        <!-- Edit & Delete Buttons -->
+        <div class="d-flex justify-content-end mt-2">
+            <!-- Edit Button -->
+            <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-sm btn-warning me-2">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+
+            <!-- Delete Button (Form for security) -->
+            <form action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <p class="text-muted">No comments yet.</p>
+{% endfor %}
+
+
+    <!-- Add Comment Form -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h3 class="card-title text-secondary">Add a Comment</h3>
+
+        {{ form_start(form, {'attr': {'onsubmit': 'return validateCommentForm(event)', 'novalidate': 'novalidate'}}) }}
+
+        <div class="form-group">
+            {{ form_widget(form.contenu, { 'attr': {'class': 'form-control required-comment', 'rows': 3} }) }}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        {{ form_end(form) }}
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center">
+        <a href="{{ path('app_post_index') }}" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+
+<!-- Alert for comment form -->
+<div id="commentAlertBox" class="alert alert-danger mt-3 d-none text-center" role="alert">
+    ⚠️ Please write a comment before submitting!
+</div>
+
+<script>
+    function validateCommentForm(event) {
+    let isValid = true;
+    let alertBox = document.getElementById("commentAlertBox");
+    alertBox.classList.add("d-none");
+    alertBox.innerText = ""; // ✅ Clear previous messages
+
+    let commentField = document.querySelector(".required-comment");
+    let commentValue = commentField.value.trim();
+
+    if (!commentValue) {
+        isValid = false;
+        commentField.classList.add("border-danger");
+        alertBox.innerText = "⚠️ Vous devez écrire un commentaire avant de soumettre.";
+    } else if (commentValue.length < 3) {
+        isValid = false;
+        commentField.classList.add("border-danger");
+        alertBox.innerText = "⚠️ Le commentaire doit contenir au moins 3 caractères.";
+    } else if (commentValue.length > 500) {
+        isValid = false;
+        commentField.classList.add("border-danger");
+        alertBox.innerText = "⚠️ Le commentaire ne peut pas dépasser 500 caractères.";
+    } else {
+        commentField.classList.remove("border-danger");
+    }
+
+    if (!isValid) {
+        event.preventDefault();
+        alertBox.classList.remove("d-none");
+        return false;
+    }
+    return true;
+}
+
+
+</script>
+
 {% endblock %}

@@ -3,11 +3,83 @@
 {% block title %}Edit Participation{% endblock %}
 
 {% block body %}
-    <h1>Edit Participation</h1>
+    <!-- Edit Participation title with brown color and Arial font -->
+    <h1 style="color: light brown; font-family: Arial, sans-serif;">Edit Participation</h1>
 
-    {{ include('participation/_form.html.twig', {'button_label': 'Update'}) }}
+    <!-- Boxed form for editing participation with smaller width -->
+    <div class="form-box">
+        {{ include('participation/_form.html.twig', {'button_label': 'Update'}) }}
+    </div>
 
-    <a href="{{ path('app_participation_index') }}">back to list</a>
+    <!-- Buttons beside the form (gold and red colors with smooth layout) -->
+    <div class="buttons-container">
+        <a href="{{ path('app_participation_index') }}" class="btn btn-back">
+            Back to list
+        </a>
 
-    {{ include('participation/_delete_form.html.twig') }}
+        {{ include('participation/_delete_form.html.twig') }}
+    </div>
+
+    <style>
+        body {
+            background-color: rgb(255, 227, 205); /* Light beige background */
+            color: #333; /* Dark grey text for contrast */
+        }
+
+        /* Title style */
+        h1 {
+            color: lightbrown; /* Light brown title color */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        /* Form box style */
+        .form-box {
+            width: 70%;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 40px; /* Space between form and buttons */
+            display: inline-block; /* Ensures buttons align beside the form */
+        }
+
+        /* Button container styling */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Adjusted gap between buttons */
+            align-items: center; /* Center the buttons */
+            margin-top: 40px;
+        }
+
+        /* Styling for the "Back to list" button */
+        .btn-back {
+            display: block;
+            width: 150px;
+            text-align: center;
+            padding: 8px;
+            background-color: gold;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        /* Styling for the delete button */
+        .btn-danger {
+            display: block;
+            width: 150px;
+            padding: 8px;
+            background-color: red;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
 {% endblock %}

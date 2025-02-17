@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ExpeditionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,7 +26,7 @@ class Expedition
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
         maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
     )]
-    private ?string $nom_expedition = null;
+    private ?string $nomExpedition = null;
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "L'univers est obligatoire.")]
@@ -35,18 +36,18 @@ class Expedition
     )]
     private ?string $univers = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "cart_tresor_url", length: 255)]
     #[Assert\NotBlank(message: "L'URL de la carte au trésor est obligatoire.")]
     #[Assert\Url(message: "L'URL de la carte doit être valide.")]
     private ?string $cart_tresor_url = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Les quêtes disponibles doivent être renseignées.")]
-    private ?string $quetes_dispo = null;
+    private ?string $quetesDispo = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "L'objet magique doit être renseigné.")]
-    private ?string $objet_magique = null;
+    private ?string $objetMagique = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Les gardiens artisanaux doivent être renseignés.")]
@@ -58,11 +59,11 @@ class Expedition
         max: 50,
         maxMessage: "La durée mystique ne peut pas dépasser {{ limit }} caractères."
     )]
-    private ?string $duree_mystique = null;
+    private ?string $dureeMystique = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: "Le secret caché doit être renseigné.")]
-    private ?string $secret_cache = null;
+    private ?string $secretCache = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "La relique finale est obligatoire.")]
@@ -70,12 +71,13 @@ class Expedition
         max: 255,
         maxMessage: "Le nom de la relique finale ne peut pas dépasser {{ limit }} caractères."
     )]
-    private ?string $relique_final = null;
+    private ?string $reliqueFinale = null;
 
     /**
      * @var Collection<int, Aventurier>
      */
-    #[ORM\ManyToMany(targetEntity: Aventurier::class, mappedBy: 'id_expedition')]
+    #[ORM\ManyToMany(targetEntity: Aventurier::class, inversedBy: 'expeditions')]
+    #[ORM\JoinTable(name: 'aventurier_expedition')]
     private Collection $aventuriers;
 
     public function __construct()
@@ -90,12 +92,12 @@ class Expedition
 
     public function getNomExpedition(): ?string
     {
-        return $this->nom_expedition;
+        return $this->nomExpedition;
     }
 
-    public function setNomExpedition(string $nom_expedition): static
+    public function setNomExpedition(string $nomExpedition): static
     {
-        $this->nom_expedition = $nom_expedition;
+        $this->nomExpedition = $nomExpedition;
         return $this;
     }
 
@@ -115,7 +117,7 @@ class Expedition
         return $this->cart_tresor_url;
     }
 
-    public function setCartTresorUrl(string $cart_tresor_url): static
+    public function setCartTresorUrl(string $cart_tresor_url): self
     {
         $this->cart_tresor_url = $cart_tresor_url;
         return $this;
@@ -123,23 +125,23 @@ class Expedition
 
     public function getQuetesDispo(): ?string
     {
-        return $this->quetes_dispo;
+        return $this->quetesDispo;
     }
 
-    public function setQuetesDispo(string $quetes_dispo): static
+    public function setQuetesDispo(string $quetesDispo): static
     {
-        $this->quetes_dispo = $quetes_dispo;
+        $this->quetesDispo = $quetesDispo;
         return $this;
     }
 
     public function getObjetMagique(): ?string
     {
-        return $this->objet_magique;
+        return $this->objetMagique;
     }
 
-    public function setObjetMagique(string $objet_magique): static
+    public function setObjetMagique(string $objetMagique): static
     {
-        $this->objet_magique = $objet_magique;
+        $this->objetMagique = $objetMagique;
         return $this;
     }
 
@@ -156,34 +158,34 @@ class Expedition
 
     public function getDureeMystique(): ?string
     {
-        return $this->duree_mystique;
+        return $this->dureeMystique;
     }
 
-    public function setDureeMystique(string $duree_mystique): static
+    public function setDureeMystique(string $dureeMystique): static
     {
-        $this->duree_mystique = $duree_mystique;
+        $this->dureeMystique = $dureeMystique;
         return $this;
     }
 
     public function getSecretCache(): ?string
     {
-        return $this->secret_cache;
+        return $this->secretCache;
     }
 
-    public function setSecretCache(string $secret_cache): static
+    public function setSecretCache(string $secretCache): static
     {
-        $this->secret_cache = $secret_cache;
+        $this->secretCache = $secretCache;
         return $this;
     }
 
-    public function getReliqueFinal(): ?string
+    public function getReliqueFinale(): ?string
     {
-        return $this->relique_final;
+        return $this->reliqueFinale;
     }
 
-    public function setReliqueFinal(string $relique_final): static
+    public function setReliqueFinale(string $reliqueFinale): static
     {
-        $this->relique_final = $relique_final;
+        $this->reliqueFinale = $reliqueFinale;
         return $this;
     }
 
@@ -199,7 +201,7 @@ class Expedition
     {
         if (!$this->aventuriers->contains($aventurier)) {
             $this->aventuriers->add($aventurier);
-            $aventurier->addIdExpedition($this);
+            $aventurier->addExpedition($this);
         }
 
         return $this;
@@ -208,7 +210,7 @@ class Expedition
     public function removeAventurier(Aventurier $aventurier): static
     {
         if ($this->aventuriers->removeElement($aventurier)) {
-            $aventurier->removeIdExpedition($this);
+            $aventurier->removeExpedition($this);
         }
 
         return $this;

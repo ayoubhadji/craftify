@@ -1,11 +1,74 @@
-{% extends 'base2.html.twig' %}
-
-{% block title %}New Post{% endblock %}
+{% extends 'baselog.html.twig' %}
 
 {% block body %}
-    <h1>Create new Post</h1>
+    <br><br><br><br><br><br>
 
-    {{ include('post/_form.html.twig') }}
+    <div class="container">
+        <h2 class="text-center mb-4">Create a New Post</h2>
 
-    <a href="{{ path('app_post_index') }}">back to list</a>
+        <div class="post-form card p-4 shadow-lg">
+            {{ form_start(form, {'attr': {'id': 'postForm', 'novalidate': 'novalidate'}}) }} 
+
+            <div class="form-group mb-3">
+                {{ form_label(form.id_user, 'User', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.id_user, { 'attr': {'class': 'form-control required-field'} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.id_user) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.type_post, 'Post Type', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.type_post, { 'attr': {'class': 'form-control required-field'} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.type_post) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.contenu, 'Content', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.contenu, { 'attr': {'class': 'form-control required-field', 'rows': 4} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.contenu) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+               {{ form_widget(form.mediaFile, { 'attr': {'class': 'form-control required-field', 'accept': 'image/png, image/jpeg, image/gif'} }) }}
+
+                <div class="form-error text-danger">{{ form_errors(form.mediaFile) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.tranche_dage, 'Age Group', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.tranche_dage, { 'attr': {'class': 'form-control required-field'} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.tranche_dage) }}</div>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Create Post</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_post_index') }}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript to Show Custom Alerts Instead of Browser Validation -->
+    <script>
+        document.getElementById('postForm').addEventListener('submit', function(event) {
+            let isValid = true;
+            let errorMessages = [];
+
+            document.querySelectorAll('.required-field').forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    let label = field.previousElementSibling ? field.previousElementSibling.innerText : 'Field';
+                    errorMessages.push("⚠ " + label + " is required.");
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                alert(errorMessages.join("\\n")); // ✅ Show alert instead of default browser validation
+            }
+        });
+    </script>
 {% endblock %}

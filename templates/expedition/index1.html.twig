@@ -1,0 +1,53 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Expéditions{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2 class="text-center text-dark fw-bold">Liste des Expéditions</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Univers</th>
+                        <th>Carte</th>
+                        <th>Quêtes</th>
+                        <th>Objet Magique</th>
+                        <th>Gardien</th>
+                        <th>Durée</th>
+                        <th>Secret</th>
+                        <th>Relique</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for expedition in expeditions %}
+                    <tr>
+                        <td>{{ expedition.id }}</td>
+                        <td>{{ expedition.nomExpedition }}</td>
+                        <td>{{ expedition.univers }}</td>
+                        <td>
+                            <a href="{{ expedition.cartTresorUrl }}" target="_blank" class="text-primary text-decoration-none">
+                                {{ expedition.cartTresorUrl|slice(0, 20) }}...
+                            </a>
+                        </td>
+                        <td>{{ expedition.quetesDispo }}</td>
+                        <td>{{ expedition.objetMagique }}</td>
+                        <td>{{ expedition.gardienArtisanaux }}</td>
+                        <td>{{ expedition.dureeMystique }}</td>
+                        <td>{{ expedition.secretCache }}</td>
+                        <td>{{ expedition.reliqueFinale }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">Aucune expédition trouvée</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

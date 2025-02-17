@@ -1,58 +1,83 @@
-{% extends 'base.html.twig' %}
+{% extends 'base2.html.twig' %}
 
-{% block title %}Expedition{% endblock %}
+{% block title %}Détails de l'Expédition{% endblock %}
 
 {% block body %}
-    <h1>Expedition</h1>
+<div class="container mt-5">
+    <h2 class="text-center text-dark fw-bold mb-4">Détails de l'Expédition</h2>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ expedition.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom_expedition</th>
-                <td>{{ expedition.nomExpedition }}</td>
-            </tr>
-            <tr>
-                <th>Univers</th>
-                <td>{{ expedition.univers }}</td>
-            </tr>
-            <tr>
-                <th>Cart_tresor_url</th>
-                <td>{{ expedition.cartTresorUrl }}</td>
-            </tr>
-            <tr>
-                <th>Quetes_dispo</th>
-                <td>{{ expedition.quetesDispo }}</td>
-            </tr>
-            <tr>
-                <th>Objet_magique</th>
-                <td>{{ expedition.objetMagique }}</td>
-            </tr>
-            <tr>
-                <th>Gardien_artisanaux</th>
-                <td>{{ expedition.gardienArtisanaux }}</td>
-            </tr>
-            <tr>
-                <th>Duree_mystique</th>
-                <td>{{ expedition.dureeMystique }}</td>
-            </tr>
-            <tr>
-                <th>Secret_cache</th>
-                <td>{{ expedition.secretCache }}</td>
-            </tr>
-            <tr>
-                <th>Relique_final</th>
-                <td>{{ expedition.reliqueFinal }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card shadow-lg p-4">
+        <table class="table table-striped table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <th class="bg-primary text-white">ID</th>
+                    <td>{{ expedition.id }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Nom de l'expédition</th>
+                    <td>{{ expedition.nomExpedition }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Univers</th>
+                    <td>{{ expedition.univers }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Carte au trésor</th>
+                    <td>
+                        <a href="{{ expedition.cartTresorUrl }}" target="_blank" class="text-primary text-decoration-none">
+                            {{ expedition.cartTresorUrl|slice(0, 30) }}...
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Quêtes disponibles</th>
+                    <td>{{ expedition.quetesDispo }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Objet magique</th>
+                    <td>{{ expedition.objetMagique }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Gardien artisanal</th>
+                    <td>{{ expedition.gardienArtisanaux }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Durée mystique</th>
+                    <td>{{ expedition.dureeMystique }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Secret caché</th>
+                    <td>{{ expedition.secretCache }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Relique finale</th>
+                    <td>{{ expedition.reliqueFinale }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <a href="{{ path('app_expedition_index') }}">back to list</a>
+    <div class="d-flex justify-content-between mt-4">
+        <!-- Bouton Retour -->
+        <a href="{{ path('app_expedition_index') }}" class="btn btn-outline-primary d-flex align-items-center px-4 py-2">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+        </a>
 
-    <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}">edit</a>
+        <div class="d-flex align-items-center">
+            <!-- Bouton Modifier -->
+            <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}" class="btn btn-warning d-flex align-items-center px-4 py-2 me-3">
+                <i class="fas fa-edit me-2"></i> Modifier
+            </a>
 
-    {{ include('expedition/_delete_form.html.twig') }}
+            <!-- Formulaire de suppression sécurisé avec CSRF Token -->
+            <form action="{{ path('app_expedition_delete', {'id': expedition.id}) }}" method="post" 
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette expédition ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ expedition.id) }}">
+                <button type="submit" class="btn btn-danger d-flex align-items-center px-4 py-2">
+                    <i class="fas fa-trash-alt me-2"></i> Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

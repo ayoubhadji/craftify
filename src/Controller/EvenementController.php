@@ -11,10 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/evenement')]
+
 final class EvenementController extends AbstractController
 {
-    #[Route(name: 'app_evenement_index', methods: ['GET'])]
+    #[Route('/evenement',name: 'app_evenement_index', methods: ['GET'])]
     public function index(EvenementRepository $evenementRepository): Response
     {
         return $this->render('evenement/index.html.twig', [
@@ -22,7 +22,7 @@ final class EvenementController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_evenement_new', methods: ['GET', 'POST'])]
+    #[Route('/evenement/new',name: 'app_evenement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $evenement = new Evenement();
@@ -42,7 +42,7 @@ final class EvenementController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_evenement_show', methods: ['GET'])]
+    #[Route('/evenement/{id}', name: 'app_evenement_show', methods: ['GET'])]
     public function show(Evenement $evenement): Response
     {
         return $this->render('evenement/show.html.twig', [
@@ -50,7 +50,7 @@ final class EvenementController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
+    #[Route('/evenement/{id}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EvenementType::class, $evenement);
@@ -68,7 +68,7 @@ final class EvenementController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_evenement_delete', methods: ['POST'])]
+    #[Route('/evenement/{id}', name: 'app_evenement_delete', methods: ['POST'])]
     public function delete(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$evenement->getId(), $request->getPayload()->getString('_token'))) {
@@ -78,4 +78,17 @@ final class EvenementController extends AbstractController
 
         return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
+    #[Route('/frontivo',name: 'app_evenement_front', methods: ['GET'])]
+    public function front(EvenementRepository $evenementRepository): Response
+    {
+        return $this->render('evenement/front.html.twig', [
+            'evenements' => $evenementRepository->findAll(),
+        ]);
+    }
+
+  
+
+
 }
