@@ -77,7 +77,7 @@ class Expedition
      * @var Collection<int, Aventurier>
      */
     #[ORM\ManyToMany(targetEntity: Aventurier::class, inversedBy: 'expeditions')]
-    #[ORM\JoinTable(name: 'aventurier_expedition')]
+    //#[ORM\JoinTable(name: 'aventurier_expedition')]
     private Collection $aventuriers;
 
     public function __construct()

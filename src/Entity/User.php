@@ -98,6 +98,9 @@ class User
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $fiscal = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
 
     public function __construct()
     {
@@ -385,4 +388,16 @@ class User
         return $this;
     }
 
+        public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
 }
+
