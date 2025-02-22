@@ -8,19 +8,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 use Symfony\Component\Routing\Annotation\Route;
+
 
 class ResetPasswordController extends AbstractController
 {
+
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
-    public function resetPassword(
-        string $token,
-        Request $request,
-        UserRepository $userRepository,
-        UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
-    ): Response {
+    public function resetPassword(string $token , Request $request , UserRepository $userRepository , EntityManagerInterface $entityManager): Response 
+    
+    {
         $error = null;
 
         // Find the user by the reset token
@@ -39,31 +37,26 @@ class ResetPasswordController extends AbstractController
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
 
+        // Debug: Log form data
+        if ($form->isSubmitted() && !$form->isValid()) {
+            // Log errors if the form is not valid
+            $error = 'There were errors in your form.';
+            dump($form->getErrors());
+        }
+
+        // Form submission handling
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $newPassword = $data['code'];
-            $confirmPassword = $data['confirm_password'];
-
-            // Check if the passwords match
-            if ($newPassword !== $confirmPassword) {
-                $error = 'Les mots de passe ne correspondent pas.';
-                return $this->render('user/resetcode.html.twig', [
-                    'form' => $form->createView(),
-                    'error' => $error, // Pass error to template
-                    'token' => $token,
-                ]);
-            }
-
-            // Hash and save the new password
-            $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
-            $user->setPassword($hashedPassword);
+            $newPassword=$form->get('code')->getData();
+            $user->setCode($newPassword);
 
             // Clear the reset token and expiration time after successful password update
             $user->setResetToken(null);
-            $user->setResetTokenExpiresAt(null);
+            // Optional: Reset token expiration if you were using one
+            //$user->setResetTokenExpiresAt(null);
 
-            // Persist changes to the database
-            $entityManager->flush();  // You don’t need to call persist if it’s already managed
+            // Save the updated user
+            $entityManager->persist($user);
+            $entityManager->flush();
 
             // Redirect to the login page with a success message
             $this->addFlash('success', 'Votre mot de passe a été réinitialisé avec succès!');
