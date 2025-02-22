@@ -1,0 +1,99 @@
+{% extends 'base2.html.twig' %}
+
+{% block body %}
+    <div class="chart-container">
+        <div class="charts-row">
+            <!-- Pie Chart -->
+            <div class="chart-item">
+                <h3>Pie Chart (Gender Distribution)</h3>
+                <canvas id="pieChart" width="400" height="400"></canvas>
+            </div>
+
+            <!-- Bar Chart -->
+            <div class="chart-item">
+                <h3>Bar Chart (Users Joined by Month)</h3>
+                <canvas id="barChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data for the Pie Chart (Gender Distribution)
+        var pieData = {
+            labels: {{ pieLabels|json_encode()|raw }},
+            datasets: [{
+                label: 'Gender Distribution',
+                data: {{ pieData|json_encode()|raw }},
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                hoverOffset: 4
+            }]
+        };
+
+        // Pie Chart Configuration
+        var pieConfig = {
+            type: 'pie',
+            data: pieData,
+        };
+
+        // Initialize Pie Chart
+        var pieChart = new Chart(
+            document.getElementById('pieChart'),
+            pieConfig
+        );
+
+        // Data for the Bar Chart (Users Joined by Month)
+        var barData = {
+            labels: {{ barLabels|json_encode()|raw }},
+            datasets: [{
+                label: 'Users Joined',
+                data: {{ barData|json_encode()|raw }},
+                backgroundColor: 'rgba(158, 149, 20, 0.6)',
+                borderColor: 'rgba(158, 149, 20, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        // Bar Chart Configuration
+        var barConfig = {
+            type: 'bar',
+            data: barData,
+        };
+
+        // Initialize Bar Chart
+        var barChart = new Chart(
+            document.getElementById('barChart'),
+            barConfig
+        );
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .chart-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .charts-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px; /* Adds space between the charts */
+        }
+
+        .chart-item {
+            flex: 1;
+            max-width: 500px; /* Controls the maximum width of each chart */
+            margin: 0 10px;
+        }
+
+        .chart-container h3 {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
