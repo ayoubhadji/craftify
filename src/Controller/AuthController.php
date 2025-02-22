@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 final class AuthController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
@@ -67,7 +68,10 @@ final class AuthController extends AbstractController
 
         return $this->render('auth/login.html.twig', [
             'error' => $error,
-            'last_email' => $lastEmail
+            'last_email' => $lastEmail,
+            'recaptcha_site_key' => $_ENV['RECAPTCHA3_KEY'],
+            'recaptcha_site_key2' => $_ENV['RECAPTCHA2_KEY']
+            
         ]);
     }
 
