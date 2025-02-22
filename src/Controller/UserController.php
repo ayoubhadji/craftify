@@ -17,19 +17,67 @@ use Symfony\Component\Routing\Annotation\Route;
 final class UserController extends AbstractController
 {
     #[Route(name: 'app_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository ,Request $request): Response
+    public function index(UserRepository $userRepository, Request $request): Response
     {
         // Nombre d'utilisateurs par page
         $page = $request->query->getInt('page', 1); // Page courante (par défaut la page 1)
         $limit = 3; // 3 utilisateurs par page
 
-        // Récupérer la liste paginée des utilisateurs
-        $users = $userRepository->findBy([], null, $limit, ($page - 1) * $limit);
-        $totalUsers = count($userRepository->findAll());
+        // Récupérer les paramètres de recherche et de tri
+        $searchTerm = $request->query->get('search', ''); // Rechercher un terme (par défaut vide)
+        $sortBy = $request->query->get('sortBy', 'nom'); // Tri par défaut sur "nom"
+        $order = $request->query->get('order', 'asc'); // Tri par défaut en ordre croissant
+
+        // Appliquer les filtres de recherche
+        $criteria = [];
+        if ($searchTerm) {
+            $criteria = [
+                'nom' => $searchTerm,
+                'email' => $searchTerm,
+                'role' => $searchTerm,  // Ajoutez d'autres critères de recherche ici
+                'code' => $searchTerm,  // Par exemple, pour rechercher dans le code
+                'tel' => $searchTerm,   // Pour rechercher dans le téléphone
+                'date_join' => $searchTerm, 
+                'sexe' => $searchTerm,  
+                'date_naissance' => $searchTerm,
+                'address' => $searchTerm // Pour rechercher dans l'adresse
+            ];
+        }
+
+        // Récupérer les utilisateurs avec le tri et la recherche
+        $queryBuilder = $userRepository->createQueryBuilder('u');
+
+        // Si un terme de recherche est fourni, appliquer les conditions
+        if ($searchTerm) {
+            $orX = $queryBuilder->expr()->orX();
+
+            foreach ($criteria as $field => $value) {
+                $orX->add("u.$field LIKE :searchTerm");
+            }
+
+            $queryBuilder->where($orX)
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        // Appliquer le tri
+        $queryBuilder->orderBy('u.' . $sortBy, $order);
+
+
+        // Pagination
+        $totalUsers = count($userRepository->findAll()); // Total des utilisateurs
         $totalPages = ceil($totalUsers / $limit);
+
+        $users = $queryBuilder
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('user/index.html.twig', [
             'users' => $users,
+            'searchTerm' => $searchTerm,
+            'sortBy' => $sortBy,
+            'order' => $order,
             'currentPage' => $page,
             'totalPages' => $totalPages
         ]);
