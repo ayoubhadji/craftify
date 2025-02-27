@@ -6,6 +6,8 @@ use App\Repository\CommandeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -33,6 +35,17 @@ class Commande
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[Assert\NotNull(message: "Un client doit être associé à la commande.")]
     private ?User $id_client = null;
+
+    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: "commandes")]
+    #[ORM\JoinTable(name: "produit_commande")]
+    private Collection $produits;
+
+    public function __construct()
+    {
+        $this->produits = new ArrayCollection();
+    }
+
+    // Getters et Setters
 
     public function getId(): ?int
     {
@@ -72,14 +85,25 @@ class Commande
         return $this;
     }
 
-    public function getIdClient(): ?User
+    public function getProduits(): Collection
     {
-        return $this->id_client;
+        return $this->produits;
     }
 
-    public function setIdClient(?User $id_client): static
+    public function addProduit(Produit $produit): self
     {
-        $this->id_client = $id_client;
+        if (!$this->produits->contains($produit)) {
+            $this->produits->add($produit);
+            $produit->addCommande($this);
+        }
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): self
+    {
+        if ($this->produits->removeElement($produit)) {
+            $produit->removeCommande($this);
+        }
         return $this;
     }
 }

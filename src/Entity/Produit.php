@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 #[Vich\Uploadable]
@@ -30,30 +32,39 @@ class Produit
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank(message: "Le prix est obligatoire.")]
     #[Assert\Positive(message: "Le prix doit être supérieur à zéro.")]
-    private ?float $prix = null;
+    private ?string $prix = null; // Stocké en string en base de données
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Assert\PositiveOrZero(message: "Le stock ne peut pas être négatif.")]
     private ?int $stock = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $img_url = null;
+    private ?string $imgUrl = null; // Correction du nom de la propriété
 
-    #[Vich\UploadableField(mapping: "produit_images", fileNameProperty: "img_url")]
+    #[Vich\UploadableField(mapping: "produit_images", fileNameProperty: "imgUrl")]
     #[Assert\File(
         maxSize: "100M",
         mimeTypes: ["image/jpeg", "image/png", "image/webp"],
         mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG, WebP)."
     )]
-    private ?File $img_file = null;
+    private ?File $imgFile = null;
 
-    #[ORM\ManyToOne(inversedBy: 'produits')]
-    private ?User $id_artisan = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'produits')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
+    private ?User $artisan = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
-    // Getters and setters
+    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: "produits")]
+    private Collection $commandes;
+
+    public function __construct()
+    {
+        $this->commandes = new ArrayCollection();
+    }
+
+    // Getters et Setters
 
     public function getId(): ?int
     {
@@ -84,12 +95,12 @@ class Produit
 
     public function getPrix(): ?float
     {
-        return $this->prix;
+        return $this->prix !== null ? (float) $this->prix : null;
     }
 
     public function setPrix(float $prix): static
     {
-        $this->prix = $prix;
+        $this->prix = (string) $prix; // Convertir float en string pour Doctrine
         return $this;
     }
 
@@ -106,36 +117,45 @@ class Produit
 
     public function getImgUrl(): ?string
     {
-        return $this->img_url;
+        return $this->imgUrl;
     }
 
-    public function setImgUrl(?string $img_url): self
+    public function setImgUrl(?string $imgUrl): self
     {
-        $this->img_url = $img_url;
+        $this->imgUrl = $imgUrl;
         return $this;
     }
 
-    public function getImgFile(): ?File
+    public function getCommandes(): Collection
     {
-        return $this->img_file;
+        return $this->commandes;
     }
 
-    public function setImgFile(?File $img_file = null): void
+    public function addCommande(Commande $commande): self
     {
-        $this->img_file = $img_file;
-        if ($img_file) {
-            $this->updatedAt = new \DateTimeImmutable();
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->addProduit($this);
         }
+        return $this;
     }
 
-    public function getIdArtisan(): ?User
+    public function removeCommande(Commande $commande): self
     {
-        return $this->id_artisan;
+        if ($this->commandes->removeElement($commande)) {
+            $commande->removeProduit($this);
+        }
+        return $this;
     }
 
-    public function setIdArtisan(?User $id_artisan): static
+    public function getArtisan(): ?User
     {
-        $this->id_artisan = $id_artisan;
+        return $this->artisan;
+    }
+
+    public function setArtisan(?User $artisan): self
+    {
+        $this->artisan = $artisan;
         return $this;
     }
 }
