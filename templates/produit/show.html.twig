@@ -1,4 +1,4 @@
-{% extends 'baselog.html.twig' %} 
+{% extends 'baselog.html.twig' %}
 
 {% block title %}Détails du Produit{% endblock %}
 
@@ -24,52 +24,27 @@
     </div>
 </div>
 
-<h1 class="mt-5 text-center">Produit : {{ produit.nom|default('Non spécifié') }}</h1>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <img src="{{ asset('uploads/images/' ~ produit.imgUrl) }}" class="card-img-top" alt="{{ produit.nom }}" style="max-height: 400px; object-fit: contain;">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>{{ produit.nom|default('Non spécifié') }}</h2>
+            <p><strong>Description:</strong> {{ produit.description|default('Pas de description disponible') }}</p>
+            <p><strong>Prix:</strong> {{ produit.prix }} €</p>
+            <p><strong>Stock:</strong> {{ produit.stock|default('Non précisé') }}</p>
+            <p><strong>Artisan:</strong> {{ produit.artisan ? produit.artisan.nom : 'Non attribué' }}</p>
 
-<div class="container mt-4">
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ produit.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ produit.nom }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ produit.description|default('Pas de description disponible') }}</td>
-            </tr>
-            <tr>
-                <th>Prix</th>
-                <td>{{ produit.prix }} €</td>
-            </tr>
-            <tr>
-                <th>Stock</th>
-                <td>{{ produit.stock|default('Non précisé') }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>
-                    {% if produit.imgUrl %}
-                        <img src="{{ asset('uploads/images/' ~ produit.imgUrl) }}" alt="{{ produit.nom }}" class="img-fluid" style="max-width: 200px;">
-                    {% else %}
-                        <span>Aucune image disponible</span>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Artisan</th>
-                <td>{{ produit.artisan ? produit.artisan.nom : 'Non attribué' }}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<!-- Bouton Ajouter au Panier -->
-<div class="container text-center mt-4">
-    <a href="#" class="btn btn-success btn-lg">🛒 Ajouter au panier</a>
+            <!-- Formulaire Ajouter au Panier -->
+            <form action="{{ path('app_panier_ajouter', {'id': produit.id}) }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('ajouter_panier_' ~ produit.id) }}">
+                <button type="submit" class="btn btn-success btn-lg">🛒 Ajouter au panier</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

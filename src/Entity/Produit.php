@@ -39,15 +39,15 @@ class Produit
     private ?int $stock = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $imgUrl = null; // Correction du nom de la propriété
+    private ?string $img_url = null;
 
-    #[Vich\UploadableField(mapping: "produit_images", fileNameProperty: "imgUrl")]
+    #[Vich\UploadableField(mapping: "produit_images", fileNameProperty: "img_url")]
     #[Assert\File(
         maxSize: "100M",
         mimeTypes: ["image/jpeg", "image/png", "image/webp"],
         mimeTypesMessage: "Veuillez télécharger une image valide (JPEG, PNG, WebP)."
     )]
-    private ?File $imgFile = null;
+    private ?File $img_file = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'produits')]
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
@@ -117,12 +117,12 @@ class Produit
 
     public function getImgUrl(): ?string
     {
-        return $this->imgUrl;
+        return $this->img_url;
     }
 
-    public function setImgUrl(?string $imgUrl): self
+    public function setImgUrl(?string $img_url): self
     {
-        $this->imgUrl = $imgUrl;
+        $this->img_url = $img_url;
         return $this;
     }
 

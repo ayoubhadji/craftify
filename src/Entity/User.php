@@ -238,7 +238,7 @@ class User
     {
         if (!$this->produits->contains($produit)) {
             $this->produits->add($produit);
-            $produit->setIdArtisan($this);
+            $produit->setArtisan($this);
         }
 
         return $this;
@@ -248,8 +248,8 @@ class User
     {
         if ($this->produits->removeElement($produit)) {
             // set the owning side to null (unless already changed)
-            if ($produit->getIdArtisan() === $this) {
-                $produit->setIdArtisan(null);
+            if ($produit->getArtisan() === $this) {
+                $produit->setArtisan(null);
             }
         }
 
@@ -268,7 +268,7 @@ class User
     {
         if (!$this->commandes->contains($commande)) {
             $this->commandes->add($commande);
-            $commande->setIdClient($this);
+            $commande->setClient($this);
         }
 
         return $this;
@@ -276,13 +276,7 @@ class User
 
     public function removeCommande(Commande $commande): static
     {
-        if ($this->commandes->removeElement($commande)) {
-            // set the owning side to null (unless already changed)
-            if ($commande->getIdClient() === $this) {
-                $commande->setIdClient(null);
-            }
-        }
-
+        $this->commandes->removeElement($commande);
         return $this;
     }
 
