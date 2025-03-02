@@ -96,7 +96,7 @@ public function adminIndex(CommentaireRepository $commentaireRepository): Respon
     $commentaires = $commentaireRepository->findAll();
 
     // Pass the 'commentaires' variable to the view for rendering
-    return $this->render('postadmin/commentaire/index.html.twig', [
+    return $this->render('postadmin/index.html.twig', [
         'commentaires' => $commentaires,
     ]);
 }

@@ -54,12 +54,40 @@ private ?string $typePost = null;
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'id_post', orphanRemoval: true)]
     private Collection $commentaires;  // ✅ Fix: Add the missing property
 
-    public function __construct()
-    {
-        $this->commentaires = new ArrayCollection();
-        $this->nmb_like = 0;
-        $this->date_publication = new \DateTime();
-    }
+    /**
+ * @var Collection<int, Reaction>
+ */
+#[ORM\OneToMany(targetEntity: Reaction::class, mappedBy: "id_post", orphanRemoval: true)]
+private Collection $reactions;
+
+    
+public function __construct()
+{
+    $this->commentaires = new ArrayCollection();
+    $this->reactions = new ArrayCollection();
+    $this->nmb_like = 0;
+    $this->date_publication = new \DateTime();
+}
+
+// Get all reactions
+public function getReactions(): Collection
+{
+    return $this->reactions;
+}
+
+// Get total likes
+public function getTotalLikes(): int
+{
+    return $this->reactions->filter(fn (Reaction $r) => $r->getType() === "like")->count();
+}
+
+// Get total dislikes
+public function getTotalDislikes(): int
+{
+    return $this->reactions->filter(fn (Reaction $r) => $r->getType() === "dislike")->count();
+}
+
+
     public function getDatePublication(): ?\DateTimeInterface
     {
         return $this->date_publication;

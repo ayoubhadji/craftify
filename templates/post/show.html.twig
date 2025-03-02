@@ -19,8 +19,27 @@
             {% else %}
                 <p class="text-muted">No image uploaded.</p>
             {% endif %}
-        </div>
+            {% if qrCodeBase64 is defined %}
+    <div class="text-center mt-3">
+        <img src="data:image/png;base64,{{ qrCodeBase64 }}" alt="QR Code" class="img-fluid shadow-sm">
     </div>
+{% else %}
+    <p class="text-muted text-center">QR Code not available.</p>
+{% endif %}
+        </div>
+
+        <div class="text-center mt-3">
+    <button class="btn btn-success" onclick="toggleReaction('{{ post.id }}', 'like')">
+        👍 Like (<span id="like-count-{{ post.id }}">{{ post.getTotalLikes() }}</span>)
+    </button>
+    <button class="btn btn-danger" onclick="toggleReaction('{{ post.id }}', 'dislike')">
+        👎 Dislike (<span id="dislike-count-{{ post.id }}">{{ post.getTotalDislikes() }}</span>)
+    </button>
+</div>
+    </div>
+   
+
+
 
     <!-- Edit Button -->
     <div class="text-center mb-4">
@@ -40,7 +59,7 @@
             <span class="text-muted">({{ commentaire.dateCommentaire|date('Y-m-d H:i') }})</span>
         </p>
         <p>{{ commentaire.contenu }}</p>
-        <p class="text-muted">Likes: {{ commentaire.nmbLike }}</p>
+        
 
         <!-- Edit & Delete Buttons -->
         <div class="d-flex justify-content-end mt-2">
@@ -86,10 +105,30 @@
 <div id="commentAlertBox" class="alert alert-danger mt-3 d-none text-center" role="alert">
     ⚠️ Please write a comment before submitting!
 </div>
+<script>
+    function toggleReaction(postId, type) {
+    fetch(`/reaction/toggle/${postId}/${type}`, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.likes !== undefined && data.dislikes !== undefined) {
+            document.getElementById(`like-count-${postId}`).innerText = data.likes;
+            document.getElementById(`dislike-count-${postId}`).innerText = data.dislikes;
+        } else {
+            console.error("Invalid response:", data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+</script>
 
 <script>
-    function validateCommentForm(event) {
-    let isValid = true;
+    async function validateCommentForm(event) {
+    event.preventDefault(); // Prevent form submission until validation passes
+
     let alertBox = document.getElementById("commentAlertBox");
     alertBox.classList.add("d-none");
     alertBox.innerText = ""; // ✅ Clear previous messages
@@ -98,28 +137,52 @@
     let commentValue = commentField.value.trim();
 
     if (!commentValue) {
-        isValid = false;
-        commentField.classList.add("border-danger");
-        alertBox.innerText = "⚠️ Vous devez écrire un commentaire avant de soumettre.";
-    } else if (commentValue.length < 3) {
-        isValid = false;
-        commentField.classList.add("border-danger");
-        alertBox.innerText = "⚠️ Le commentaire doit contenir au moins 3 caractères.";
-    } else if (commentValue.length > 500) {
-        isValid = false;
-        commentField.classList.add("border-danger");
-        alertBox.innerText = "⚠️ Le commentaire ne peut pas dépasser 500 caractères.";
-    } else {
-        commentField.classList.remove("border-danger");
-    }
-
-    if (!isValid) {
-        event.preventDefault();
-        alertBox.classList.remove("d-none");
+        showAlert("⚠️ You must write a comment before submitting.");
         return false;
     }
-    return true;
+    if (commentValue.length < 3) {
+        showAlert("⚠️ The comment must contain at least 3 characters.");
+        return false;
+    }
+    if (commentValue.length > 500) {
+        showAlert("⚠️ The comment cannot exceed 500 characters.");
+        return false;
+    }
+
+    // ✅ Check for bad words using API
+    let isProfane = await checkProfanity(commentValue);
+    if (isProfane) {
+        showAlert("❌ This comment contains bad words. Please remove them before submitting.");
+        commentField.classList.add("border-danger");
+        return false;
+    }
+
+    commentField.classList.remove("border-danger");
+    event.target.submit(); // ✅ Submit form if validation passes
 }
+
+// ✅ Function to check for bad words using PurgoMalum API
+async function checkProfanity(text) {
+    try {
+        let response = await fetch(`https://www.purgomalum.com/service/containsprofanity?text=${encodeURIComponent(text)}`);
+        let result = await response.text();
+        return result === "true"; // API returns "true" if profanity is found
+    } catch (error) {
+        console.error("Error checking profanity:", error);
+        return false; // Assume no profanity if API fails
+    }
+}
+
+// ✅ Function to show alerts
+function showAlert(message) {
+    let alertBox = document.getElementById("commentAlertBox");
+    alertBox.innerText = message;
+    alertBox.classList.remove("d-none"); // Show alert box
+    setTimeout(() => alertBox.classList.add("d-none"), 5000); // Hide alert after 5s
+}
+
+
+
 
 
 </script>

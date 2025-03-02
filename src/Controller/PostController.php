@@ -16,20 +16,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserRepository;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
+use Symfony\Bundle\SecurityBundle\Security;  // ✅ Correct namespace
+
 
 
 #[Route('/post')]
 class PostController extends AbstractController
 {
-
     
     #[Route('/', name: 'app_post_index', methods: ['GET'])]
-    public function index(PostRepository $postRepository): Response
-    {
-        return $this->render('post/index.html.twig', [
-            'posts' => $postRepository->findAll(),
-        ]);
-    }
+public function index(PostRepository $postRepository): Response
+{
+    // ✅ Get all posts
+    $posts = $postRepository->findBy([], ['date_publication' => 'DESC']);
+
+    // ✅ Get recommended posts for User ID 1
+    $recommendedPosts = $postRepository->findRecommendedPostsForUser();
+
+    // ✅ Get all unique typePosts
+    $types = $postRepository->findDistinctTypePosts();
+
+    return $this->render('post/index.html.twig', [
+        'posts' => $posts,
+        'recommendedPosts' => $recommendedPosts,
+        'types' => $types,  // ✅ Pass 'types' to Twig
+    ]);
+}
+
+
+
 
     #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -66,45 +83,62 @@ class PostController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
+    #[Route('/post/{id}', name: 'app_post_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Post $post, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    {
+        // Generate QR Code Text
+        $qrText = $post->getTypePost() . ' - ' . strtok($post->getContenu(), "\n") . '...';
+
+        // ✅ Generate QR Code using chillerlan/php-qrcode
+        $options = new QROptions([
+            'outputType' => QRCode::OUTPUT_IMAGE_PNG,
+            'eccLevel' => QRCode::ECC_H,
+            'imageBase64' => false,
+            'scale' => 5,
+        ]);
+
+        $qrCode = (new QRCode($options))->render($qrText);
+        $qrCodeBase64 = base64_encode($qrCode);
+
+        // Create new Comment object
+        $commentaire = new Commentaire();
+
+        // Fetch the default user (User with ID 1)
+        $user = $userRepository->find(19);
+        if (!$user) {
+            throw $this->createNotFoundException('User not found.');
+        }
+
+        // Set required fields
+        $commentaire->setIdUser($user);
+        $commentaire->setIdPost($post);
+        $commentaire->setDateCommentaire(new \DateTime());
+        $commentaire->setNmbLike(0);
+
+        // Create the form
+        $form = $this->createForm(CommentaireType::class, $commentaire);
+        $form->handleRequest($request);
+
+        // Handle form submission
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($commentaire);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+        }
+
+        return $this->render('post/show.html.twig', [
+            'post' => $post,
+            'form' => $form->createView(),
+            'qrCodeBase64' => $qrCodeBase64, // ✅ Always pass the QR Code
+        ]);
+    }
     
 
 
-#[Route('/post/{id}', name: 'app_post_show', methods: ['GET', 'POST'])]
-public function show(Request $request, Post $post, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
-{
-    // Create new Comment object
-    $commentaire = new Commentaire();
 
-    // Fetch the default user (User with ID 19)
-    $user = $userRepository->find(19);
-    if (!$user) {
-        throw $this->createNotFoundException('User not found.');
-    }
-
-    // Set required fields
-    $commentaire->setIdUser($user);
-    $commentaire->setIdPost($post);
-    $commentaire->setDateCommentaire(new \DateTime());
-    $commentaire->setNmbLike(0);
-
-    // Create the form
-    $form = $this->createForm(CommentaireType::class, $commentaire);
-    $form->handleRequest($request);
-
-    // Handle form submission
-    if ($form->isSubmitted() && $form->isValid()) {
-        $entityManager->persist($commentaire);
-        $entityManager->flush();
-
-        // Redirect to refresh comments after adding
-        return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
-    }
-
-    return $this->render('post/show.html.twig', [
-        'post' => $post,
-        'form' => $form->createView(),
-    ]);
-}
 
 
 

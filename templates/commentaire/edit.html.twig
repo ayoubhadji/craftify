@@ -1,36 +1,39 @@
 {% extends 'baselog.html.twig' %}
 
-{% block title %}Edit Commentaire{% endblock %}
+{% block title %}Commentaire index{% endblock %}
 
 {% block body %}
-<br><br><br><br>
-    <div class="container mt-5">
-       
+    <h1>Commentaire index</h1>
 
-        <!-- Form Section -->
-        <div class="row">
-            <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
-                <div class="card shadow-sm border-light rounded">
-                    <div class="card-body">
-                        <!-- Include the form template -->
-                        {{ include('commentaire/_form.html.twig', {'button_label': 'Update', 'class': 'btn btn-primary btn-lg w-100'}) }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Contenu</th>
+                <th>Date_commentaire</th>
+                <th>Nmb_like</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commentaire in commentaires %}
+            <tr>
+                <td>{{ commentaire.id }}</td>
+                <td>{{ commentaire.contenu }}</td>
+                <td>{{ commentaire.dateCommentaire ? commentaire.dateCommentaire|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ commentaire.nmbLike }}</td>
+                <td>
+                    <a href="{{ path('app_commentaire_show', {'id': commentaire.id}) }}">show</a>
+                    <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-        <!-- Back Link Section -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <a href="{{ path('app_commentaire_index') }}" class="btn btn-secondary btn-sm">Back to List</a>
-            </div>
-        </div>
-
-        <!-- Delete Form Section -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                {{ include('commentaire/_delete_form.html.twig') }}
-            </div>
-        </div>
-    </div>
+    <a href="{{ path('app_commentaire_new') }}">Create new</a>
 {% endblock %}

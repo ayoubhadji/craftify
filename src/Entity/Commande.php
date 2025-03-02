@@ -32,21 +32,20 @@ class Commande
     #[Assert\Positive(message: "Le total doit être un montant positif.")]
     private ?float $total = null;
 
+    // Correction ici : on définit la relation ManyToOne avec l'entité User
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'commandes')]
     #[ORM\JoinColumn(name: "id_client_id", referencedColumnName: "id", nullable: true)]
     #[Assert\NotNull(message: "Un client doit être associé à la commande.")]
     private ?User $client = null;
 
+    // Relation ManyToMany avec l'entité Produit
     #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: "commandes")]
-    //#[ORM\JoinTable(name: "commande_produit")]
     private Collection $produits;
 
     public function __construct()
     {
         $this->produits = new ArrayCollection();
     }
-
-
 
     public function getId(): ?int
     {
@@ -89,6 +88,7 @@ class Commande
         return $this;
     }
 
+    // Getters and setters for the client
     public function getClient(): ?User
     {
         return $this->client;
@@ -100,6 +100,7 @@ class Commande
         return $this;
     }
 
+    // Getters and setters for the produits
     public function getProduits(): Collection
     {
         return $this->produits;

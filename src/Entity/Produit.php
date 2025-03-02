@@ -125,6 +125,18 @@ class Produit
         $this->img_url = $img_url;
         return $this;
     }
+    public function getImgFile(): ?File
+    {
+        return $this->img_file;
+    }
+
+    public function setImgFile(?File $img_file = null): void
+    {
+        $this->img_file = $img_file;
+        if ($img_file) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
 
     public function getCommandes(): Collection
     {

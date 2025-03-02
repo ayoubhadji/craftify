@@ -6,20 +6,94 @@
     <div class="container mt-5 mb-5">
         <br><br><br><br>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-primary">Latest Posts</h2>
-            <a href="{{ path('app_post_new') }}" class="btn btn-success btn-lg">
-                <i class="fas fa-plus"></i> Create New Post
-            </a>
+        
+
+        <!-- ✅ Search Bar -->
+        <div class="input-group mb-4 w-50 mx-auto">
+
+            <input type="text" id="search-input" class="form-control" placeholder="Search posts...">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="row">
+       <div class="d-flex flex-column align-items-center mb-4">
+    <!-- ✅ Type Filter Buttons -->
+    <div class="text-center mb-3">
+        <button class="btn btn-secondary filter-btn active" data-filter="all">All</button>
+        {% for type in types %}
+            <button class="btn btn-primary filter-btn" data-filter="{{ type }}">{{ type | capitalize }}</button>
+        {% endfor %}
+    </div>
+
+    <!-- ✅ Create Post Button (Centered & Below Filters) -->
+    <a href="{{ path('app_post_new') }}" class="btn btn-success btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <i class="fas fa-plus"></i>
+    </a>
+</div>
+<!-- ✅ Recommended Posts Section -->
+        <h2 class="text-primary text-center">Recommended for You</h2>
+
+{% if recommendedPosts is not empty %}
+    <div class="row">
+        {% for post in recommendedPosts %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm border-0">
+                    <a href="{{ path('app_post_show', {'id': post.id}) }}">
+                        <img src="{{ post.mediaUrl ? asset('uploads/posts/' ~ post.mediaUrl) : asset('images/default.jpg') }}" 
+    class="card-img-top img-fluid rounded" alt="Post Image" style="width: 100%; height: 200px; object-fit: cover;">
+
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{{ path('app_post_show', {'id': post.id}) }}" class="text-decoration-none text-dark">
+                                {{ post.typePost | capitalize }}
+                            </a>
+                        </h5>
+                        <p class="card-text text-muted">
+                            {{ post.contenu|slice(0, 100) ~ (post.contenu|length > 100 ? '...' : '') }}
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt"></i> {{ post.datePublication ? post.datePublication|date('Y-m-d') : 'N/A' }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-users"></i> {{ post.trancheDage | capitalize }}
+                            </small>
+                        </div>
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary btn-sm mt-3">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- ✅ Message when no recommended posts are available -->
+    <p class="text-muted text-center">No recommended posts available.</p>
+{% endif %}
+
+        
+
+        <!-- ✅ Posts Container -->
+        <div class="row" id="post-container">
             {% for post in posts %}
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-4 mb-4 post-item" 
+                     data-category="{{ post.typePost }}" 
+                     data-title="{{ post.typePost | lower }}"
+                     data-content="{{ post.contenu | lower }}"
+                     data-date="{{ post.datePublication ? post.datePublication|date('Y-m-d') : '' }}"
+                     data-likes="{{ post.totalLikes }}"
+                     data-dislikes="{{ post.totalDislikes }}">
+
                     <div class="card shadow-sm border-0">
                         <a href="{{ path('app_post_show', {'id': post.id}) }}">
                             <img src="{{ post.mediaUrl ? asset('uploads/posts/' ~ post.mediaUrl) : asset('images/default.jpg') }}" 
-                                class="card-img-top img-fluid rounded" alt="Post Image">
+    class="card-img-top img-fluid rounded" alt="Post Image" style="width: 100%; height: 200px; object-fit: cover;">
+
                         </a>
                         <div class="card-body">
                             <h5 class="card-title">
@@ -30,6 +104,7 @@
                             <p class="card-text text-muted">
                                 {{ post.contenu|slice(0, 100) ~ (post.contenu|length > 100 ? '...' : '') }}
                             </p>
+
                             <div class="d-flex justify-content-between">
                                 <small class="text-muted">
                                     <i class="fas fa-calendar-alt"></i> {{ post.datePublication ? post.datePublication|date('Y-m-d') : 'N/A' }}
@@ -38,6 +113,17 @@
                                     <i class="fas fa-comments"></i> {{ post.commentaires|length }} Comments
                                 </small>
                             </div>
+
+                            <!-- ✅ Like & Dislike Counts -->
+                            <div class="d-flex justify-content-between mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-thumbs-up text-success"></i> {{ post.totalLikes }} Likes
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-thumbs-down text-danger"></i> {{ post.totalDislikes }} Dislikes
+                                </small>
+                            </div>
+
                             <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn btn-primary btn-sm mt-3">
                                 Read More <i class="fas fa-arrow-right"></i>
                             </a>
@@ -52,17 +138,56 @@
                 </div>
             {% endfor %}
         </div>
-
-        <div class="pagination-wrap d-flex justify-content-center mt-4">
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav>
-        </div>
     </div>
+
+    <!-- ✅ JavaScript for Filtering -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const filterButtons = document.querySelectorAll(".filter-btn");
+            const searchInput = document.getElementById("search-input");
+            const posts = document.querySelectorAll(".post-item, .recommended-post-item");
+
+
+            let activeFilter = "all";
+
+            function filterPosts() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                posts.forEach(post => {
+                    const category = post.getAttribute("data-category").toLowerCase();
+                    const title = post.getAttribute("data-title").toLowerCase();
+                    const content = post.getAttribute("data-content").toLowerCase();
+                    const date = post.getAttribute("data-date").toLowerCase();
+                    const likes = post.getAttribute("data-likes");
+                    const dislikes = post.getAttribute("data-dislikes");
+
+                    const matchesSearch = searchTerm === "" || 
+                                         title.includes(searchTerm) || 
+                                         content.includes(searchTerm) || 
+                                         date.includes(searchTerm) || 
+                                         likes.includes(searchTerm) || 
+                                         dislikes.includes(searchTerm);
+
+                    const matchesFilter = activeFilter === "all" || category === activeFilter;
+
+                    if (matchesSearch && matchesFilter) {
+                        post.style.display = "block";
+                    } else {
+                        post.style.display = "none";
+                    }
+                });
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    filterButtons.forEach(btn => btn.classList.remove("active"));
+                    this.classList.add("active");
+                    activeFilter = this.getAttribute("data-filter");
+                    filterPosts();
+                });
+            });
+
+            searchInput.addEventListener("keyup", filterPosts);
+        });
+    </script>
 {% endblock %}
