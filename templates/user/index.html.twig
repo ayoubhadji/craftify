@@ -1,0 +1,302 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">List des users</h1>
+
+    
+    <div class="table-container">
+<!-- Search Form and Sorting Options above the Table -->
+
+
+    <div class="table-filters">
+        <!-- Search Form -->
+        <div class="search-container">
+            <form method="get" action="{{ path('app_user_index') }}">
+                <input type="text" name="search" value="{{ searchTerm }}" placeholder="Rechercher par nom ou email..." />
+                <button type="submit">Rechercher</button>
+            </form>
+
+
+            
+        </div>
+
+        <!-- Sorting Options -->
+        <div class="sort-container">
+            <form method="get" action="{{ path('app_user_index') }}">
+                <label for="sort-by">Trier par:</label>
+                <select name="sortBy" id="sort-by">
+                    <option value="nom" {% if sortBy == 'nom' %}selected{% endif %}>Nom</option>
+                    <option value="email" {% if sortBy == 'email' %}selected{% endif %}>Email</option>
+                    <option value="date_join" {% if sortBy == 'date_join' %}selected{% endif %}>Date de Join</option>
+                    <option value="sexe" {% if sortBy == 'sexe' %}selected{% endif %}>sexe</option>
+                    <option value="id" {% if sortBy == 'id' %}selected{% endif %}>identifiant</option>
+                    <option value="date_naissance" {% if sortBy == 'date_naissance' %}selected{% endif %}>date de Naissance</option>
+                    <option value="address" {% if sortBy == 'address' %}selected{% endif %}>adresse</option>
+                    <option value="role" {% if sortBy == 'role' %}selected{% endif %}>role</option>
+
+                </select>
+
+                <label for="order">Ordre:</label>
+                <select name="order" id="order">
+                    <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascendant</option>
+                    <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descendant</option>
+                </select>
+
+                <button type="submit">Appliquer</button>
+            </form>
+        </div>
+    </div>
+
+    
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Code</th>
+                    <th>Role</th>
+                    <th>Sexe</th>
+                    <th>Date Naissance</th>
+                    <th>Date Join</th>
+                    <th>Tel</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.nom }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.code }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.sexe }}</td>
+                    <td>{{ user.dateNaissance ? user.dateNaissance|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ user.dateJoin ? user.dateJoin|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ user.tel }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>
+                        <li><a href="{{ path('app_user_show', {'id': user.id}) }}" class="action-btn show-btn">Show</a></li>
+                        <li><a href="{{ path('app_user_edit', {'id': user.id}) }}" class="action-btn edit-btn">Edit</a></li>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11" class="no-records">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {% if currentPage > 1 %}
+                <a href="{{ path('app_user_index', {'page': currentPage - 1, 'search': searchTerm, 'sortBy': sortBy, 'order': order}) }}" class="prev">Previous</a>
+            {% endif %}
+
+            {% for page in 1..totalPages %}
+                <a href="{{ path('app_user_index', {'page': page, 'search': searchTerm, 'sortBy': sortBy, 'order': order}) }}" class="page-link {% if page == currentPage %}active{% endif %}">{{ page }}</a>
+            {% endfor %}
+
+            {% if currentPage < totalPages %}
+                <a href="{{ path('app_user_index', {'page': currentPage + 1, 'search': searchTerm, 'sortBy': sortBy, 'order': order}) }}" class="next">Next</a>
+            {% endif %}
+        </div>
+
+        <div class="create-btn-container">
+            <a href="{{ path('app_user_new') }}" class="create-btn">Create New</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles spécifiques à la page */
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: rgb(158, 149, 20);
+            background-color: rgb(0, 0, 0);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: rgba(50, 51, 36, 0.34); /* Gris clair */
+            color: #333; /* Texte en gris foncé pour un bon contraste */
+        }
+
+        /* Nouvelle mise en forme du filtre de recherche et tri */
+        .table-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .create-btn {
+            background-color: rgb(158, 149, 20);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .create-btn:hover {
+            background-color: rgb(158, 149, 20);
+        }
+
+        /* Recherche */
+        .search-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-container input {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .search-container button {
+            padding: 10px 15px;
+            background-color: rgb(158, 149, 20);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .search-container button:hover {
+            background-color: #b29b14;
+        }
+
+        /* Tri */
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sort-container label {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .sort-container select {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .sort-container button {
+            padding: 10px 15px;
+            background-color: rgb(158, 149, 20);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .sort-container button:hover {
+            background-color: #b29b14;
+        }
+
+        /* Table container */
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(248, 10, 10, 0.1);
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-table th {
+            background-color: rgb(158, 149, 20);
+            color: white;
+        }
+
+        .user-table tr:hover {
+            background-color: rgb(158, 149, 20);
+        }
+
+        .no-records {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+            padding: 20px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 10px;
+            margin: 0 5px;
+            text-decoration: none;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination a.active {
+            background-color: rgb(158, 149, 20);
+            color: white;
+        }
+
+        .pagination .prev, .pagination .next {
+            padding: 10px 20px;
+            background-color: rgb(158, 149, 20);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .pagination .prev:hover, .pagination .next:hover {
+            background-color: rgb(158, 149, 20);
+        }
+    </style>
+{% endblock %}

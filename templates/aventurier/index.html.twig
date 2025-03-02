@@ -1,0 +1,49 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Index des Aventuriers{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Index des Aventuriers</h1>
+
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom de Code</th>
+                    <th>Quêtes Terminées</th>
+                    <th>Artefact Possédé</th>
+                    <th>Compagnon Créatif</th>
+                    <th>Badge Légendaire</th>
+                    <th>Signe Distinctif</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aventurier in aventuriers %}
+                    <tr>
+                        <td>{{ aventurier.id }}</td>
+                        <td>{{ aventurier.nomCode }}</td>
+                        <td>{{ aventurier.quetesTerminees }}</td>
+                        <td>{{ aventurier.artefactPossede }}</td>
+                        <td>{{ aventurier.compagneCreatif }}</td>
+                        <td>{{ aventurier.badgeLegendaire }}</td>
+                        <td>{{ aventurier.signeDistinctif }}</td>
+                        <td>
+                            <a href="{{ path('app_aventurier_show', {'id': aventurier.id}) }}" class="btn btn-info btn-sm">Afficher</a>
+                            <a href="{{ path('app_aventurier_edit', {'id': aventurier.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center">Aucun enregistrement trouvé</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_aventurier_new') }}" class="btn btn-success">Créer un Nouvel Aventurier</a>
+        </div>
+    </div>
+{% endblock %}

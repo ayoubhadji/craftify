@@ -1,0 +1,38 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        {% for field in form %}
+            <div class="col-md-6 mb-3">
+                <div class="form-group">
+                    {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                    
+                    {# Affichage des erreurs en rouge #}
+                    {% if field.vars.errors|length > 0 %}
+                        <div class="text-danger mt-1">
+                            {{ form_errors(field) }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <button class="btn btn-gold mt-3">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+{{ form_end(form) }}
+{% block stylesheets %}
+    
+    <style>
+        /* Ajouter une couleur dorée pour le bouton */
+        .btn-gold {
+            background-color: rgb(158, 149, 20); /* Couleur or */
+            color: white; /* Texte blanc */
+            border: none; /* Enlever les bordures */
+        }
+
+        .btn-gold:hover {
+            background-color: rgb(255, 204, 0); /* Couleur or plus claire au survol */
+        }
+    </style>
+{% endblock %}

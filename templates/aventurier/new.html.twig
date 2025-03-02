@@ -1,0 +1,27 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Créer un Nouvel Aventurier{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4 text-dark fw-bold">Créer un Nouvel Aventurier</h1>
+
+        {# Affichage des messages flash #}
+        {% for message in app.session.flashbag.get('success') %}
+            <div class="alert alert-success d-flex align-items-center">
+                <i class="fas fa-check-circle me-2"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="card shadow-lg p-4 bg-light rounded">
+            {{ include('aventurier/_form.html.twig') }}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_aventurier_index') }}" class="btn btn-secondary px-4 py-2">
+                <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}

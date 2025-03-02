@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Réinitialisation du mot de passe</title>
+    
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{{ asset('back/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('back/vendors/flag-icon-css/css/flag-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('back/vendors/css/vendor.bundle.base.css') }}">
+    
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{{ asset('back/css/vertical-light-layout/style.css') }}">
+    <link rel="shortcut icon" href="{{ asset('back/images/favicon.png') }}" />
+</head>
+
+<body>
+    {% block title %}Réinitialisation du mot de passe{% endblock %}
+
+    {% block body %}
+        <div class="container-scroller">
+            <div class="container-fluid page-body-wrapper full-page-wrapper">
+                <div class="content-wrapper d-flex align-items-center auth">
+                    <div class="row flex-grow">
+                        <div class="col-lg-5 mx-auto">
+                            <div class="auth-form-light text-center p-5">
+                                <div class="brand-logo">
+                                    <img src="{{ asset('back/images/logo0.png') }}" alt="logo" class="logo-dark" style="max-width: 70px; height: auto;" />
+                                </div>
+                                <h4>Réinitialiser votre mot de passe</h4>
+                                <h6 class="font-weight-light">Veuillez entrer votre nouveau mot de passe.</h6>
+
+                                <!-- Affichage des erreurs -->
+                                {% if error %}
+                                    <div class="alert alert-danger">
+                                        {{ error }}
+                                    </div>
+                                {% endif %}
+
+                                <!-- Reset password form -->
+                                {{ form_start(form, {'attr': {'class': 'pt-3'}}) }}
+                                    <div class="form-group">
+                                        {{ form_row(form.code, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn d-grid btn-primary btn-lg font-weight-medium auth-form-btn">
+                                            Réinitialiser le mot de passe
+                                        </button>
+                                    </div>
+                                {{ form_end(form) }}
+
+                                <div class="text-center mt-4 font-weight-light">
+                                    <a href="{{ path('app_login') }}" class="text-primary">Retour à la page de connexion</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- content-wrapper ends -->
+            </div>
+            <!-- page-body-wrapper ends -->
+        </div>
+        <!-- container-scroller ends -->
+    {% endblock %}
+
+    <!-- plugins:js -->
+    <script src="{{ asset('back/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('back/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('back/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('back/js/misc.js') }}"></script>
+    <script src="{{ asset('back/js/settings.js') }}"></script>
+    <script src="{{ asset('back/js/todolist.js') }}"></script>
+</body>
+</html>

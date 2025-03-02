@@ -1,0 +1,51 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Comments List{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">List of Comments</h2>
+
+        <!-- Comments Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Comment</th>
+                    <th>User</th>
+                    <th>Post</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commentaire in commentaires %}
+                    <tr>
+                        <td>{{ commentaire.id }}</td>
+                        <td>{{ commentaire.contenu }}</td>
+                        <td>{{ commentaire.idUser.nom }}</td>
+                        <td><a href="{{ path('admin_post_show', {'id': commentaire.idPost.id}) }}">{{ commentaire.idPost.type_post }}</a></td>
+                        <td>{{ commentaire.dateCommentaire|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <!-- Edit Button -->
+                            <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <!-- Delete Button -->
+                            <form action="{{ path('admin_commentaire_delete', {'id': commentaire.id}) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">No comments found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Créer une Nouvelle Expédition{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center text-dark fw-bold mb-4">Créer une Nouvelle Expédition</h1>
+
+    <!-- Affichage des messages de succès ou d'erreur -->
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <!-- Formulaire -->
+    <div class="card shadow-lg p-4">
+        {{ include('expedition/_form.html.twig', {'button_label': 'Créer'}) }}
+    </div>
+
+    <!-- Boutons de navigation -->
+    <div class="d-flex justify-content-between mt-4">
+        <!-- Bouton Retour -->
+        <a href="{{ path('app_expedition_index') }}" class="btn btn-outline-secondary d-flex align-items-center">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+        </a>
+
+        <!-- Bouton Réinitialiser -->
+        <button type="reset" class="btn btn-warning">Réinitialiser</button>
+    </div>
+</div>
+{% endblock %}

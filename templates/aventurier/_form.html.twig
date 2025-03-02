@@ -1,0 +1,32 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        {% for field in form %}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+
+                    {# Add 'is-invalid' class if the field has errors #}
+                    {{ form_widget(field, {
+                        'attr': {
+                            'class': 'form-control' ~ (field.vars.errors|length > 0 ? ' is-invalid' : ''),
+                            'aria-describedby': field.vars.id ~ '-error'
+                        }
+                    }) }}
+
+                    {# Bootstrap-friendly error messages #}
+                    {% if field.vars.errors|length > 0 %}
+                        <div id="{{ field.vars.id }}-error" class="invalid-feedback">
+                            {{ form_errors(field) }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-primary">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+{{ form_end(form) }}

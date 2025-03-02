@@ -1,0 +1,43 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Modifier l'Aventurier{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5 text-dark fw-bold">Modifier l'Aventurier</h1>
+
+    <!-- Form for editing the adventurer -->
+    <div class="card shadow-lg p-4 bg-light">
+        {{ include('aventurier/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+
+    <!-- Back to list button -->
+    <div class="text-center mt-5">
+        <a href="{{ path('app_aventurier_index') }}" class="btn btn-outline-secondary px-4 py-2">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+        </a>
+    </div>
+
+    <!-- Delete button in a separate card with confirmation -->
+    <div class="mt-5 text-center">
+        <div class="card p-4 border-danger">
+            <h5 class="card-title text-danger"><i class="fas fa-exclamation-triangle"></i> Attention!</h5>
+            <p class="card-text">Si vous supprimez cet aventurier, toutes les informations liées seront perdues.</p>
+
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-danger px-4 py-2" onclick="confirmDelete()">
+                    <i class="fas fa-trash-alt me-2"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete() {
+        if (confirm("Êtes-vous sûr de vouloir supprimer cet aventurier ? Cette action est irréversible.")) {
+            document.getElementById('delete-form').submit();
+        }
+    }
+</script>
+{% endblock %}

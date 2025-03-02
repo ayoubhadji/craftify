@@ -1,0 +1,72 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Foire index{% endblock %}
+
+{% block body %}
+
+
+<div class="container-xxl bg-light my-6 py-6 pt-0">
+    <div class="container">
+        <div class="bg-primary text-light rounded-bottom p-5 my-6 mt-0 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 text-light mb-0">Découvrez Nos Foires</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <p class="text-primary text-uppercase mb-2">// Nos Foires</p>
+            <h1 class="display-6 mb-4">Explorez Nos Événements</h1>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Date_debut</th>
+                        <th>Date_fin</th>
+                        <th>Lieu</th>
+                        <th>Capacite_max</th>
+                        <th>Created_at</th>
+                        <th>Prix</th>
+                        <th>Rate</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for foire in foires %}
+                        <tr>
+                            <td>{{ foire.id }}</td>
+                            <td>{{ foire.nom }}</td>
+                            <td>{{ foire.description }}</td>
+                            <td>{{ foire.dateDebut ? foire.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ foire.dateFin ? foire.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ foire.lieu }}</td>
+                            <td>{{ foire.capaciteMax }}</td>
+                            <td>{{ foire.createdAt ? foire.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ foire.prix }}</td>
+                            <td>{{ foire.rate }}</td>
+                            <td>
+                                <a href="{{ path('app_foire_show', {'id': foire.id}) }}" class="btn btn-primary btn-sm">Show</a>
+                                <a href="{{ path('app_foire_edit', {'id': foire.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="11" class="text-center">No records found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_foire_new') }}" class="btn btn-success">Create New Foire</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

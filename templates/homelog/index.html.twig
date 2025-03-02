@@ -1,0 +1,97 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %} Craftify Website {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    
+
+    {# Carousel Start #}
+    <div class="container-fluid p-0 pb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="owl-carousel header-carousel position-relative">
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="{{ asset('img/mainphoto.png') }}" alt="Carousel Image 1">
+                <div class="owl-carousel-inner">
+                    <div class="container">
+                        <div class="row justify-content-start">
+                            <div class="col-lg-8">
+                                <p class="text-primary text-uppercase fw-bold mb-2">// Craftify for the win </p>
+                                <h1 class="display-1 text-light mb-4 animated slideInDown">Un Clic Un talant Unique</h1>
+                                <p class="text-light fs-5 mb-4 pb-3">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+                                <a href="#" class="btn btn-primary rounded-pill py-3 px-5">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="{{ asset('img/test1.jpg') }}" alt="Carousel Image 2">
+                <div class="owl-carousel-inner">
+                    <div class="container">
+                        <div class="row justify-content-start">
+                            <div class="col-lg-8">
+                                <p class="text-primary text-uppercase fw-bold mb-2">// Craftify for the win</p>
+                                <h1 class="display-1 text-light mb-4 animated slideInDown">Un Clic Un talant Unique</h1>
+                                <p class="text-light fs-5 mb-4 pb-3">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+                                <a href="#" class="btn btn-primary rounded-pill py-3 px-5">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Carousel End #}
+
+    {# Facts Start #}
+    <div class="container-xxl py-6">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="fact-item bg-light rounded text-center h-100 p-5">
+                        <i class="fa fa-certificate fa-4x text-primary mb-4"></i>
+                        <p class="mb-2">Years Experience</p>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">50</h1>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.3s">
+                    <div class="fact-item bg-light rounded text-center h-100 p-5">
+                        <i class="fa fa-users fa-4x text-primary mb-4"></i>
+                        <p class="mb-2">Skilled Professionals</p>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">175</h1>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 wow fadeIn" data-wow-delay="0.7s">
+                    <div class="fact-item bg-light rounded text-center h-100 p-5">
+                        <i class="fa fa-cart-plus fa-4x text-primary mb-4"></i>
+                        <p class="mb-2">Order Everyday</p>
+                        <h1 class="display-5 mb-0" data-toggle="counter-up">9357</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Facts End #}
+
+
+
+    {# Product Start #}
+    
+    {# Product End #}
+
+    {# Service Start #}
+   
+    {# Service End #}
+
+   
+
+{# Back to Top Button #}
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center">🛒 Mon Panier</h1>
+
+    {% if panier is empty %}
+        <p class="text-center">Votre panier est vide.</p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in panier %}
+                    <tr>
+                        <td>{{ item.nom }}</td>
+                        <td>{{ item.prix }} €</td>
+                        <td>{{ item.quantite }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+           <form action="{{ path('app_commande_valider') }}" method="POST">
+    <button type="submit" class="btn btn-primary">Passer la commande</button>
+</form>
+
+          
+            <a href="{{ path('app_panier_vider') }}" class="btn btn-danger">🗑 Vider le panier</a>
+        </div>
+        <!-- Exemple de lien pour passer la commande -->
+
+
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Détails du Produit{% endblock %}
+
+{% block body %}
+<div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" 
+     style="background-image: url('{{ asset('img/test1.JPG') }}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 500px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;">
+    
+    <div class="container">
+        <h1 class="display-1 text-white animated slideInDown mb-3">Détails du Produit</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="{{ path('app_produit_index') }}">Produits</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">{{ produit.nom|default('Produit inconnu') }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <img src="{{ asset('uploads/images/' ~ produit.imgUrl) }}" class="card-img-top" alt="{{ produit.nom }}" style="max-height: 400px; object-fit: contain;">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>{{ produit.nom|default('Non spécifié') }}</h2>
+            <p><strong>Description:</strong> {{ produit.description|default('Pas de description disponible') }}</p>
+            <p><strong>Prix:</strong> {{ produit.prix }} €</p>
+            <p><strong>Stock:</strong> {{ produit.stock|default('Non précisé') }}</p>
+            <p><strong>Artisan:</strong> {{ produit.artisan ? produit.artisan.nom : 'Non attribué' }}</p>
+
+            <!-- Formulaire Ajouter au Panier -->
+            <form action="{{ path('app_panier_ajouter', {'id': produit.id}) }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('ajouter_panier_' ~ produit.id) }}">
+                <button type="submit" class="btn btn-success btn-lg">🛒 Ajouter au panier</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

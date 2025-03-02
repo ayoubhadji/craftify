@@ -1,0 +1,69 @@
+{% extends 'baselog.html.twig' %}
+{% block body %}
+ {# About Start #}
+ <!-- Page Header Start -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s" 
+     style="background-image: url('{{ asset('img/test1.JPG') }}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 500px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;">
+    
+    <div class="container">
+        <h1 class="display-1 text-white animated slideInDown mb-3">About Us</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">About</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+    <!-- Page Header End -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="row img-twice position-relative h-100">
+                        <div class="col-6">
+                            <img class="img-fluid rounded" src="{{ asset('img/aboutus1.jpg') }}" alt="About Image 1">
+                        </div>
+                        <div class="col-6 align-self-end">
+                            <img class="img-fluid rounded" src="{{ asset('img/aboutus2.jpg') }}" alt="About Image 2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="h-100">
+                        <p class="text-primary text-uppercase mb-2">// About Us</p>
+                        <h1 class="display-6 mb-4">L'Artisanat Authentique entre Tradition et Passion</h1>
+                        <p>L’Artisanat à Portée de Main, Créé avec Passion Chaque œuvre est le reflet d’un savoir-faire unique, façonné avec soin par des artisans passionnés.</p>
+                        <p> Notre plateforme met en lumière leur talent, en offrant un espace où tradition et modernité se rencontrent.</p>
+                        <p> Explorez un univers où chaque pièce raconte une histoire et donnez vie à vos envies d’authenticité.</p>
+                        <div class="row g-2 mb-4">
+                            <div class="col-sm-6">
+                                <i class="fa fa-check text-primary me-2"></i>Créations uniques
+                            </div>
+                            <div class="col-sm-6">
+                                <i class="fa fa-check text-primary me-2"></i>Marketplace artisanale
+                            </div>
+                            <div class="col-sm-6">
+                                <i class="fa fa-check text-primary me-2"></i>Online Order
+                            </div>
+                            <div class="col-sm-6">
+                                <i class="fa fa-check text-primary me-2"></i>Home Delivery
+                            </div>
+                        </div>
+                        <a class="btn btn-primary rounded-pill py-3 px-5" href="{{ path('app_produit_index') }}">Découvrir nos créations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# About End #}
+        {% endblock %}
