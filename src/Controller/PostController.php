@@ -75,8 +75,8 @@ public function show(Request $request, Post $post, EntityManagerInterface $entit
     // Create new Comment object
     $commentaire = new Commentaire();
 
-    // Fetch the default user (User with ID 1)
-    $user = $userRepository->find(1);
+    // Fetch the default user (User with ID 19)
+    $user = $userRepository->find(19);
     if (!$user) {
         throw $this->createNotFoundException('User not found.');
     }

@@ -6,6 +6,8 @@ use App\Repository\CommandeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -18,7 +20,7 @@ class Commande
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull(message: "La date de commande est obligatoire.")]
     #[Assert\Type("\DateTimeInterface", message: "La date de commande doit être une date valide.")]
-    private ?\DateTimeInterface $date_commande = null;
+    private ?\DateTimeInterface $dateCommande = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le statut de la commande est obligatoire.")]
@@ -30,9 +32,21 @@ class Commande
     #[Assert\Positive(message: "Le total doit être un montant positif.")]
     private ?float $total = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'commandes')]
+    #[ORM\JoinColumn(name: "id_client_id", referencedColumnName: "id", nullable: true)]
     #[Assert\NotNull(message: "Un client doit être associé à la commande.")]
-    private ?User $id_client = null;
+    private ?User $client = null;
+
+    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: "commandes")]
+    //#[ORM\JoinTable(name: "commande_produit")]
+    private Collection $produits;
+
+    public function __construct()
+    {
+        $this->produits = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -41,12 +55,12 @@ class Commande
 
     public function getDateCommande(): ?\DateTimeInterface
     {
-        return $this->date_commande;
+        return $this->dateCommande;
     }
 
-    public function setDateCommande(\DateTimeInterface $date_commande): static
+    public function setDateCommande(\DateTimeInterface $dateCommande): static
     {
-        $this->date_commande = $date_commande;
+        $this->dateCommande = $dateCommande;
         return $this;
     }
 
@@ -57,6 +71,9 @@ class Commande
 
     public function setStatut(string $statut): static
     {
+        if (!in_array($statut, ["En attente", "Expédiée", "Livrée", "Annulée"])) {
+            throw new \InvalidArgumentException("Statut invalide.");
+        }
         $this->statut = $statut;
         return $this;
     }
@@ -72,14 +89,36 @@ class Commande
         return $this;
     }
 
-    public function getIdClient(): ?User
+    public function getClient(): ?User
     {
-        return $this->id_client;
+        return $this->client;
     }
 
-    public function setIdClient(?User $id_client): static
+    public function setClient(User $client): static
     {
-        $this->id_client = $id_client;
+        $this->client = $client;
+        return $this;
+    }
+
+    public function getProduits(): Collection
+    {
+        return $this->produits;
+    }
+
+    public function addProduit(Produit $produit): self
+    {
+        if (!$this->produits->contains($produit)) {
+            $this->produits->add($produit);
+            $produit->addCommande($this);
+        }
+        return $this;
+    }
+
+    public function removeProduit(Produit $produit): self
+    {
+        if ($this->produits->removeElement($produit)) {
+            $produit->removeCommande($this);
+        }
         return $this;
     }
 }

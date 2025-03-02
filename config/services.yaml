@@ -6,6 +6,7 @@
 parameters:
 
     mailer_dsn: '%env(MAILER_DSN)%'
+    post_images_directory: '%kernel.project_dir%/public/uploads/posts'
     
 
 services:
