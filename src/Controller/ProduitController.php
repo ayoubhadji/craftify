@@ -9,31 +9,74 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/produit')]
 final class ProduitController extends AbstractController
 {
-    // Afficher tous les produits
-    #[Route('/proch', name: 'produit_back', methods: ['GET'])]
-    public function prosh(ProduitRepository $produitRepository): Response
-    {
-        return $this->render('produit/indexback.html.twig', [
-            'produits' => $produitRepository->findAll(),
-        ]);
-    }
-
-
-
+    // Afficher tous les produits avec pagination, recherche et tri
     #[Route('/all', name: 'app_produit_index', methods: ['GET'])]
-    public function allProducts(ProduitRepository $produitRepository): Response
+    public function allProducts(ProduitRepository $produitRepository, Request $request): Response
     {
+        // Nombre de produits par page
+        $page = $request->query->getInt('page', 1); // Page courante (par défaut la page 1)
+        $limit = 3; // 3 produits par page
+
+        // Récupérer les paramètres de recherche et de tri
+        $searchTerm = $request->query->get('search', ''); // Rechercher un terme (par défaut vide)
+        $sortBy = $request->query->get('sortBy', 'nom'); // Tri par défaut sur "nom"
+        $order = $request->query->get('order', 'asc'); // Tri par défaut en ordre croissant
+
+        // Appliquer les filtres de recherche
+        $criteria = [];
+        if ($searchTerm) {
+            $criteria = [
+                'nom' => $searchTerm,
+                'description' => $searchTerm,
+                'prix' => $searchTerm,
+                'stock' => $searchTerm,
+            ];
+        }
+
+        // Récupérer les produits avec le tri et la recherche
+        $queryBuilder = $produitRepository->createQueryBuilder('p');
+
+        // Si un terme de recherche est fourni, appliquer les conditions
+        if ($searchTerm) {
+            $orX = $queryBuilder->expr()->orX();
+
+            foreach ($criteria as $field => $value) {
+                $orX->add("p.$field LIKE :searchTerm");
+            }
+
+            $queryBuilder->where($orX)
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        // Appliquer le tri
+        $queryBuilder->orderBy('p.' . $sortBy, $order);
+
+        // Pagination
+        $totalProduits = count($produitRepository->findAll()); // Total des produits
+        $totalPages = ceil($totalProduits / $limit);
+
+        $produits = $queryBuilder
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
         return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
+            'produits' => $produits,
+            'searchTerm' => $searchTerm,
+            'sortBy' => $sortBy,
+            'order' => $order,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
 
-    // Afficher uniquement les produits de l'artisan connecté
+    // Afficher uniquement les produits de l'artisan connecté avec pagination, recherche et tri
     #[Route('/my', name: 'app_produit_my', methods: ['GET'])]
     public function myProducts(ProduitRepository $produitRepository, Request $request): Response
     {
@@ -47,14 +90,65 @@ final class ProduitController extends AbstractController
             return $this->redirectToRoute('app_produit_all');
         }
 
-        $produits = $produitRepository->findBy(['id_artisan' => $user]);
+        // Nombre de produits par page
+        $page = $request->query->getInt('page', 1); // Page courante (par défaut la page 1)
+        $limit = 3; // 3 produits par page
+
+        // Récupérer les paramètres de recherche et de tri
+        $searchTerm = $request->query->get('search', ''); // Rechercher un terme (par défaut vide)
+        $sortBy = $request->query->get('sortBy', 'nom'); // Tri par défaut sur "nom"
+        $order = $request->query->get('order', 'asc'); // Tri par défaut en ordre croissant
+
+        // Appliquer les filtres de recherche
+        $criteria = [];
+        if ($searchTerm) {
+            $criteria = [
+                'nom' => $searchTerm,
+                'description' => $searchTerm,
+                'prix' => $searchTerm,
+                'stock' => $searchTerm,
+            ];
+        }
+
+        // Récupérer les produits avec le tri et la recherche
+        $queryBuilder = $produitRepository->createQueryBuilder('p')
+            ->where('p.artisan = :artisan')
+            ->setParameter('artisan', $user);
+
+        // Si un terme de recherche est fourni, appliquer les conditions
+        if ($searchTerm) {
+            $orX = $queryBuilder->expr()->orX();
+
+            foreach ($criteria as $field => $value) {
+                $orX->add("p.$field LIKE :searchTerm");
+            }
+
+            $queryBuilder->andWhere($orX)
+                        ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        // Appliquer le tri
+        $queryBuilder->orderBy('p.' . $sortBy, $order);
+
+        // Pagination
+        $totalProduits = count($produitRepository->findBy(['artisan' => $user])); // Total des produits de l'artisan
+        $totalPages = ceil($totalProduits / $limit);
+
+        $produits = $queryBuilder
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('produit/myprod.html.twig', [
             'produits' => $produits,
+            'searchTerm' => $searchTerm,
+            'sortBy' => $sortBy,
+            'order' => $order,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
         ]);
     }
-    
-
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -63,9 +157,9 @@ final class ProduitController extends AbstractController
         $user = $request->getSession()->get('user');
 
 
-        if ($user && in_array('ROLE_ARTISAN', [$user->getRole()])) {
+        if ($user && $user->getRole() !== 'ARTISAN') {
 
-            $produit->setIdArtisan($user); // Associer l'utilisateur connecté en tant qu'artisan
+            $produit->setArtisan($user); // Associer l'utilisateur connecté en tant qu'artisan
         }
 
 
@@ -100,6 +194,7 @@ final class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Flush the changes to the database
             $entityManager->flush();
 
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
@@ -107,40 +202,34 @@ final class ProduitController extends AbstractController
 
         return $this->render('produit/edit.html.twig', [
             'produit' => $produit,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}/delete', name: 'app_produit_delete', methods: ['POST'])]
-public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
-{
+    public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    {
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->request->get('_token'))) {
-        
-        // Récupérer l'image associée
-        $imgUrl = $produit->getImgUrl();
+            // Handle the file removal if an image exists
+            $imgUrl = $produit->getImgUrl();
 
-        if (!empty($imgUrl) && is_string($imgUrl)) {
-            $imagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/images/' . $imgUrl;
+            if ($imgUrl) {
+                $imagePath = $this->getParameter('kernel.project_dir') . '/public/uploads/images/' . $imgUrl;
 
-            // Vérifier que le chemin est valide, que le fichier existe et qu'il est bien un fichier
-            if (file_exists($imagePath) && is_file($imagePath) && strpos($imagePath, "\0") === false) {
-                unlink($imagePath); // Supprime l'image
+                if (file_exists($imagePath) && is_file($imagePath)) {
+                    unlink($imagePath); // Delete the image file
+                }
             }
+
+            // Delete the product
+            $entityManager->remove($produit);
+            $entityManager->flush();
         }
 
-        // Supprimer le produit de la base de données
-        $entityManager->remove($produit);
-        $entityManager->flush();
+        return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-}
-
-
-
-
-
-#[Route('/proch/{id}', name: 'produit_show_back', methods: ['GET'])]
+    #[Route('/proch/{id}', name: 'produit_show_back', methods: ['GET'])]
     public function showback(Produit $produit): Response
     {
         return $this->render('produit/showback.html.twig', [
@@ -162,8 +251,7 @@ public function delete(Request $request, Produit $produit, EntityManagerInterfac
 
         return $this->render('produit/editback.html.twig', [
             'produit' => $produit,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
-
 }

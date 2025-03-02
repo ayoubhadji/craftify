@@ -4,41 +4,66 @@
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center">🛒 Mon Panier</h1>
+    <h1 class="text-center text-primary fw-bold">🛒 Mon Panier</h1>
 
     {% if panier is empty %}
-        <p class="text-center">Votre panier est vide.</p>
+        <div class="alert alert-warning text-center mt-4">
+            Votre panier est vide. <a href="{{ path('app_produit_index') }}" class="text-decoration-none fw-bold">Voir les produits</a>
+        </div>
     {% else %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th>Prix</th>
-                    <th>Quantité</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in panier %}
-                    <tr>
-                        <td>{{ item.nom }}</td>
-                        <td>{{ item.prix }} €</td>
-                        <td>{{ item.quantite }}</td>
+        <div class="table-responsive mt-4">
+            <table class="table align-middle shadow-sm rounded-3">
+                <thead class="bg-light">
+                    <tr class="text-muted text-center">
+                        <th>Produit</th>
+                        <th>Prix</th>
+                        <th>Quantité</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in panier %}
+                        <tr class="text-center">
+                            <td class="fw-bold text-secondary">{{ item.nom }}</td>
+                            <td class="text-success fw-bold">{{ item.prix }} €</td>
+                            <td>
+                                <form action="{{ path('app_panier_modifier_quantite', {'id': item.id}) }}" method="POST" class="d-flex align-items-center justify-content-center">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('modifier_quantite_' ~ item.id) }}">
+
+                                    <button type="submit" name="action" value="decrementer" class="btn btn-outline-secondary btn-sm rounded-circle">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <span class="mx-3 fw-bold">{{ item.quantite }}</span>
+                                    <button type="submit" name="action" value="incrementer" class="btn btn-outline-primary btn-sm rounded-circle">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="{{ path('app_panier_supprimer', {'id': item.id}) }}" method="POST">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('supprimer_panier_' ~ item.id) }}">
+                                    <button type="submit" class="btn btn-light text-danger btn-sm border-0">
+                                        <i class="bi bi-trash3"></i> Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="text-center mt-4">
-           <form action="{{ path('app_commande_valider') }}" method="POST">
-    <button type="submit" class="btn btn-primary">Passer la commande</button>
-</form>
+            <form action="{{ path('app_commande_valider') }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm">
+                    <i class="bi bi-bag-check"></i> Commander
+                </button>
+            </form>
 
-          
-            <a href="{{ path('app_panier_vider') }}" class="btn btn-danger">🗑 Vider le panier</a>
+            <a href="{{ path('app_panier_vider') }}" class="btn btn-outline-danger btn-lg ms-3 px-4 rounded-pill shadow-sm">
+                <i class="bi bi-trash"></i> Vider le panier
+            </a>
         </div>
-        <!-- Exemple de lien pour passer la commande -->
-
-
     {% endif %}
 </div>
 {% endblock %}

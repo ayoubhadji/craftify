@@ -25,6 +25,18 @@
     </div>
 </div>
 
+{# Afficher les flash messages #}
+<div class="container mt-3">
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
 <div class="container-xxl bg-light my-6 py-6 pt-0">
     <div class="container">
         <div class="bg-primary text-light rounded-bottom p-5 my-6 mt-0 wow fadeInUp" data-wow-delay="0.1s">
@@ -49,6 +61,31 @@
             <h1 class="display-6 mb-4">Explorez Notre Collection</h1>
         </div>
 
+        {# Barre de recherche et options de tri #}
+        <div class="row mb-4 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="col-md-6">
+                <form action="{{ path('app_produit_index') }}" method="get" class="d-flex">
+                    <input type="text" name="search" class="form-control me-2" placeholder="Rechercher un produit..." value="{{ searchTerm }}">
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </form>
+            </div>
+            <div class="col-md-6 text-end">
+                <form action="{{ path('app_produit_index') }}" method="get" class="d-flex justify-content-end">
+                    <select name="sortBy" class="form-select me-2" style="width: auto;">
+                        <option value="nom" {{ sortBy == 'nom' ? 'selected' }}>Nom</option>
+                        <option value="prix" {{ sortBy == 'prix' ? 'selected' }}>Prix</option>
+                        <option value="stock" {{ sortBy == 'stock' ? 'selected' }}>Stock</option>
+                    </select>
+                    <select name="order" class="form-select me-2" style="width: auto;">
+                        <option value="asc" {{ order == 'asc' ? 'selected' }}>Croissant</option>
+                        <option value="desc" {{ order == 'desc' ? 'selected' }}>Décroissant</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Trier</button>
+                </form>
+            </div>
+        </div>
+
+        {# Liste des produits #}
         <div class="row g-4">
             {% for produit in produits %}
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.{{ loop.index }}s">
@@ -79,6 +116,35 @@
                 </div>
             {% endfor %}
         </div>
+
+        {# Pagination #}
+        <div class="row mt-4 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="col-12 d-flex justify-content-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if currentPage > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_produit_index', {'page': currentPage - 1, 'search': searchTerm, 'sortBy': sortBy, 'order': order}) }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for i in 1..totalPages %}
+                            <li class="page-item {{ i == currentPage ? 'active' }}">
+                                <a class="page-link" href="{{ path('app_produit_index', {'page': i, 'search': searchTerm, 'sortBy': sortBy, 'order': order}) }}">{{ i }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if currentPage < totalPages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('app_produit_index', {'page': currentPage + 1, 'search': searchTerm, 'sortBy': sortBy, 'order': order}) }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -87,7 +153,7 @@
         <a href="{{ path('app_produit_new') }}" class="btn btn-success">Créer un nouveau produit</a>
     </div>
     <div class="text-center mt-4">
-        <a href="{{ path('app_produit_my') }}" class="btn btn-success">mes produits</a>
+        <a href="{{ path('app_produit_my') }}" class="btn btn-success">Mes produits</a>
     </div>
 {% endif %}
 

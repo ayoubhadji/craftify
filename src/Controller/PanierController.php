@@ -14,16 +14,13 @@ class PanierController extends AbstractController
     #[Route('/panier/ajouter/{id}', name: 'app_panier_ajouter', methods: ['POST'])]
     public function ajouterAuPanier(Produit $produit, SessionInterface $session, Request $request): Response
     {
-        // Vérification du token CSRF
         if (!$this->isCsrfTokenValid('ajouter_panier_' . $produit->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Action non autorisée.');
             return $this->redirectToRoute('app_produit_index');
         }
 
-        // Récupérer le panier de la session
         $panier = $session->get('panier', []);
 
-        // Ajouter le produit au panier ou incrémenter la quantité
         $id = $produit->getId();
         if (!isset($panier[$id])) {
             $panier[$id] = [
@@ -32,17 +29,13 @@ class PanierController extends AbstractController
                 'prix' => $produit->getPrix(),
                 'quantite' => 1
             ];
+            $this->addFlash('success', sprintf('Le produit "%s" a été ajouté au panier !', $produit->getNom()));
         } else {
             $panier[$id]['quantite']++;
+            $this->addFlash('success', sprintf('Quantité du produit "%s" augmentée.', $produit->getNom()));
         }
 
-        // Mettre à jour la session
         $session->set('panier', $panier);
-
-        // Message de confirmation
-        $this->addFlash('success', 'Produit ajouté au panier !');
-
-        // Redirection vers la page des produits
         return $this->redirectToRoute('app_produit_index');
     }
 
@@ -60,8 +53,55 @@ class PanierController extends AbstractController
     public function viderPanier(SessionInterface $session): Response
     {
         $session->remove('panier');
-        $this->addFlash('success', 'Panier vidé avec succès.');
+        $this->addFlash('success', 'Le panier a été vidé.');
         return $this->redirectToRoute('app_produit_index');
+    }
+
+    #[Route('/panier/supprimer/{id}', name: 'app_panier_supprimer', methods: ['POST'])]
+    public function supprimerDuPanier(int $id, SessionInterface $session, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('supprimer_panier_' . $id, $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Action non autorisée.');
+            return $this->redirectToRoute('app_panier');
+        }
+
+        $panier = $session->get('panier', []);
+
+        if (isset($panier[$id])) {
+            $nomProduit = $panier[$id]['nom'];
+            unset($panier[$id]);
+            $session->set('panier', $panier);
+            $this->addFlash('success', sprintf('Le produit "%s" a été supprimé.', $nomProduit));
+        } else {
+            $this->addFlash('danger', 'Produit introuvable.');
+        }
+
+        return $this->redirectToRoute('app_panier');
+    }
+
+    #[Route('/panier/modifier/{id}', name: 'app_panier_modifier_quantite', methods: ['POST'])]
+    public function modifierQuantite(int $id, SessionInterface $session, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('modifier_quantite_' . $id, $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Action non autorisée.');
+            return $this->redirectToRoute('app_panier');
+        }
+
+        $panier = $session->get('panier', []);
+
+        if (isset($panier[$id])) {
+            $action = $request->request->get('action');
+
+            if ($action === 'incrementer') {
+                $panier[$id]['quantite']++;
+            } elseif ($action === 'decrementer' && $panier[$id]['quantite'] > 1) {
+                $panier[$id]['quantite']--;
+            }
+
+            $session->set('panier', $panier);
+        }
+
+        return $this->redirectToRoute('app_panier');
     }
 
     #[Route('/commande/valider', name: 'app_commande_valider')]
@@ -74,13 +114,10 @@ class PanierController extends AbstractController
             return $this->redirectToRoute('app_panier');
         }
 
-        // Sauvegarder la commande dans la base de données
-        // Exemple: ajouter une entité Commande et lier les produits avec une entité CommandeProduit
+        // Sauvegarde de la commande en BDD (à implémenter)
 
-        // Vider le panier après la commande
         $session->remove('panier');
-
-        $this->addFlash('success', 'Votre commande a bien été enregistrée !');
+        $this->addFlash('success', 'Votre commande a été enregistrée !');
 
         return $this->redirectToRoute('app_produit_index');
     }
