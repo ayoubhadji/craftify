@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Expedition{% endblock %}
+
+{% block body %}
+    <h1>Expedition</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ expedition.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom_expedition</th>
+                <td>{{ expedition.nomExpedition }}</td>
+            </tr>
+            <tr>
+                <th>Univers</th>
+                <td>{{ expedition.univers }}</td>
+            </tr>
+            <tr>
+                <th>Cart_tresor_url</th>
+                <td>{{ expedition.cartTresorUrl }}</td>
+            </tr>
+            <tr>
+                <th>Quetes_dispo</th>
+                <td>{{ expedition.quetesDispo }}</td>
+            </tr>
+            <tr>
+                <th>Objet_magique</th>
+                <td>{{ expedition.objetMagique }}</td>
+            </tr>
+            <tr>
+                <th>Gardien_artisanaux</th>
+                <td>{{ expedition.gardienArtisanaux }}</td>
+            </tr>
+            <tr>
+                <th>Duree_mystique</th>
+                <td>{{ expedition.dureeMystique }}</td>
+            </tr>
+            <tr>
+                <th>Secret_cache</th>
+                <td>{{ expedition.secretCache }}</td>
+            </tr>
+            <tr>
+                <th>Relique_final</th>
+                <td>{{ expedition.reliqueFinal }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_expedition_index') }}">back to list</a>
+
+    <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}">edit</a>
+
+    {{ include('expedition/_delete_form.html.twig') }}
+{% endblock %}

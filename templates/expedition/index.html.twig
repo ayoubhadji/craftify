@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Expedition index{% endblock %}
+
+{% block body %}
+    <h1>Expedition index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom_expedition</th>
+                <th>Univers</th>
+                <th>Cart_tresor_url</th>
+                <th>Quetes_dispo</th>
+                <th>Objet_magique</th>
+                <th>Gardien_artisanaux</th>
+                <th>Duree_mystique</th>
+                <th>Secret_cache</th>
+                <th>Relique_final</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for expedition in expeditions %}
+            <tr>
+                <td>{{ expedition.id }}</td>
+                <td>{{ expedition.nomExpedition }}</td>
+                <td>{{ expedition.univers }}</td>
+                <td>{{ expedition.cartTresorUrl }}</td>
+                <td>{{ expedition.quetesDispo }}</td>
+                <td>{{ expedition.objetMagique }}</td>
+                <td>{{ expedition.gardienArtisanaux }}</td>
+                <td>{{ expedition.dureeMystique }}</td>
+                <td>{{ expedition.secretCache }}</td>
+                <td>{{ expedition.reliqueFinal }}</td>
+                <td>
+                    <a href="{{ path('app_expedition_show', {'id': expedition.id}) }}">show</a>
+                    <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_expedition_new') }}">Create new</a>
+{% endblock %}

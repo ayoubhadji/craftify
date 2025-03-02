@@ -1,0 +1,190 @@
+{% extends 'baselog.html.twig' %}
+
+{% block body %}
+<br><br><br><br>
+<div class="container mt-5">
+    <!-- Post Details -->
+    <div class="card shadow-lg p-4 mb-4 text-center"> 
+        <div class="card-body">
+            <h1 class="card-title text-primary">{{ post.typePost }}</h1>
+            <p class="card-text text-muted">{{ post.contenu }}</p>
+
+            <!-- Image Display -->
+            {% if post.mediaUrl %}
+                <div>
+                    <img src="{{ asset('uploads/posts/' ~ post.mediaUrl) }}" 
+                         alt="Post Image" class="img-fluid rounded shadow-sm"
+                         style="max-width: 600px; display: block; margin: auto;">
+                </div>
+            {% else %}
+                <p class="text-muted">No image uploaded.</p>
+            {% endif %}
+            {% if qrCodeBase64 is defined %}
+    <div class="text-center mt-3">
+        <img src="data:image/png;base64,{{ qrCodeBase64 }}" alt="QR Code" class="img-fluid shadow-sm">
+    </div>
+{% else %}
+    <p class="text-muted text-center">QR Code not available.</p>
+{% endif %}
+        </div>
+
+        <div class="text-center mt-3">
+    <button class="btn btn-success" onclick="toggleReaction('{{ post.id }}', 'like')">
+        👍 Like (<span id="like-count-{{ post.id }}">{{ post.getTotalLikes() }}</span>)
+    </button>
+    <button class="btn btn-danger" onclick="toggleReaction('{{ post.id }}', 'dislike')">
+        👎 Dislike (<span id="dislike-count-{{ post.id }}">{{ post.getTotalDislikes() }}</span>)
+    </button>
+</div>
+    </div>
+   
+
+
+
+    <!-- Edit Button -->
+    <div class="text-center mb-4">
+        <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit Post
+        </a>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h3 class="card-title text-secondary">Comments</h3>
+        
+        {% for commentaire in post.commentaires %}
+    <div class="border rounded p-3 mb-3 bg-light">
+        <p>
+            <strong class="text-primary">{{ commentaire.idUser.nom }}</strong>
+            <span class="text-muted">({{ commentaire.dateCommentaire|date('Y-m-d H:i') }})</span>
+        </p>
+        <p>{{ commentaire.contenu }}</p>
+        
+
+        <!-- Edit & Delete Buttons -->
+        <div class="d-flex justify-content-end mt-2">
+            <!-- Edit Button -->
+            <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-sm btn-warning me-2">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+
+            <!-- Delete Button (Form for security) -->
+            <form action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <p class="text-muted">No comments yet.</p>
+{% endfor %}
+
+
+    <!-- Add Comment Form -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h3 class="card-title text-secondary">Add a Comment</h3>
+
+        {{ form_start(form, {'attr': {'onsubmit': 'return validateCommentForm(event)', 'novalidate': 'novalidate'}}) }}
+
+        <div class="form-group">
+            {{ form_widget(form.contenu, { 'attr': {'class': 'form-control required-comment', 'rows': 3} }) }}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        {{ form_end(form) }}
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center">
+        <a href="{{ path('app_post_index') }}" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+
+<!-- Alert for comment form -->
+<div id="commentAlertBox" class="alert alert-danger mt-3 d-none text-center" role="alert">
+    ⚠️ Please write a comment before submitting!
+</div>
+<script>
+    function toggleReaction(postId, type) {
+    fetch(`/reaction/toggle/${postId}/${type}`, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.likes !== undefined && data.dislikes !== undefined) {
+            document.getElementById(`like-count-${postId}`).innerText = data.likes;
+            document.getElementById(`dislike-count-${postId}`).innerText = data.dislikes;
+        } else {
+            console.error("Invalid response:", data);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+</script>
+
+<script>
+    async function validateCommentForm(event) {
+    event.preventDefault(); // Prevent form submission until validation passes
+
+    let alertBox = document.getElementById("commentAlertBox");
+    alertBox.classList.add("d-none");
+    alertBox.innerText = ""; // ✅ Clear previous messages
+
+    let commentField = document.querySelector(".required-comment");
+    let commentValue = commentField.value.trim();
+
+    if (!commentValue) {
+        showAlert("⚠️ You must write a comment before submitting.");
+        return false;
+    }
+    if (commentValue.length < 3) {
+        showAlert("⚠️ The comment must contain at least 3 characters.");
+        return false;
+    }
+    if (commentValue.length > 500) {
+        showAlert("⚠️ The comment cannot exceed 500 characters.");
+        return false;
+    }
+
+    // ✅ Check for bad words using API
+    let isProfane = await checkProfanity(commentValue);
+    if (isProfane) {
+        showAlert("❌ This comment contains bad words. Please remove them before submitting.");
+        commentField.classList.add("border-danger");
+        return false;
+    }
+
+    commentField.classList.remove("border-danger");
+    event.target.submit(); // ✅ Submit form if validation passes
+}
+
+// ✅ Function to check for bad words using PurgoMalum API
+async function checkProfanity(text) {
+    try {
+        let response = await fetch(`https://www.purgomalum.com/service/containsprofanity?text=${encodeURIComponent(text)}`);
+        let result = await response.text();
+        return result === "true"; // API returns "true" if profanity is found
+    } catch (error) {
+        console.error("Error checking profanity:", error);
+        return false; // Assume no profanity if API fails
+    }
+}
+
+// ✅ Function to show alerts
+function showAlert(message) {
+    let alertBox = document.getElementById("commentAlertBox");
+    alertBox.innerText = message;
+    alertBox.classList.remove("d-none"); // Show alert box
+    setTimeout(() => alertBox.classList.add("d-none"), 5000); // Hide alert after 5s
+}
+
+
+
+
+
+</script>
+
+{% endblock %}

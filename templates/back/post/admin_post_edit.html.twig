@@ -1,0 +1,46 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Edit Post</h2>
+
+        <div class="post-form card p-4 shadow-lg">
+            {{ form_start(form, {'attr': {'id': 'postForm', 'novalidate': 'novalidate'}}) }}
+
+            <div class="form-group mb-3">
+                {{ form_label(form.type_post, 'Post Type', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.type_post, { 'attr': {'class': 'form-control required-field'} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.type_post) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.contenu, 'Content', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.contenu, { 'attr': {'class': 'form-control required-field', 'rows': 4} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.contenu) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_widget(form.mediaFile, { 'attr': {'class': 'form-control required-field', 'accept': 'image/png, image/jpeg, image/gif'} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.mediaFile) }}</div>
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form_label(form.tranche_dage, 'Age Group', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.tranche_dage, { 'attr': {'class': 'form-control required-field'} }) }}
+                <div class="form-error text-danger">{{ form_errors(form.tranche_dage) }}</div>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Update Post</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('admin_post_index') }}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+{% endblock %}
