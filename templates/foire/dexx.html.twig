@@ -12,7 +12,6 @@
             align-items: center; 
             justify-content: center; 
             text-align: center;">
-    
     <div class="container">
         <h1 class="display-1 text-white animated slideInDown mb-3">Foire Index</h1>
         <nav aria-label="breadcrumb animated slideInDown">
@@ -38,6 +37,16 @@
         <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
             <p class="text-primary text-uppercase mb-2">// Nos Foires</p>
             <h1 class="display-6 mb-4">Explorez Nos Événements</h1>
+        </div>
+
+        <!-- Search Form -->
+        <div class="mb-4">
+            <form method="get" action="{{ path('big_foir') }}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for Foires" name="search" value="{{ search }}">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+            </form>
         </div>
 
         <div class="table-responsive">
@@ -69,10 +78,20 @@
                             <td>{{ foire.capaciteMax }}</td>
                             <td>{{ foire.createdAt ? foire.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                             <td>{{ foire.prix }}</td>
-                            <td>{{ foire.rate }}</td>
+                            <td>
+                                <!-- Rating Display as Stars -->
+                                <span class="stars">
+                                    {% for i in 1..5 %}
+                                        {% if i <= foire.rate %}
+                                            <i class="fa fa-star" style="color: gold;"></i>
+                                        {% else %}
+                                            <i class="fa fa-star" style="color: grey;"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </td>
                             <td>
                                 <a href="{{ path('foire_slider_items', {id: foire.id}) }}" class="btn btn-primary btn-sm">Show</a>
-                               
                             </td>
                         </tr>
                     {% else %}
@@ -84,8 +103,17 @@
             </table>
         </div>
 
-     
+        <!-- Pagination Controls -->
+        <div class="text-center">
+            {% if currentPage > 1 %}
+                <a href="{{ path('big_foir', {page: currentPage - 1, search: search}) }}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            {% if currentPage < totalPages %}
+                <a href="{{ path('big_foir', {page: currentPage + 1, search: search}) }}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+
     </div>
 </div>
-
 {% endblock %}

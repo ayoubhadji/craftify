@@ -16,6 +16,24 @@ class EvenementRepository extends ServiceEntityRepository
         parent::__construct($registry, Evenement::class);
     }
 
+
+    /**
+     * Find events whose 'lieu' field contains the given search term.
+     *
+     * @param string $place
+     * @return Evenement[]
+     */
+    public function findByPlace(string $place): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.lieu LIKE :place')
+            ->setParameter('place', '%' . $place . '%')
+            ->orderBy('e.date_debut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    
+
     //    /**
     //     * @return Evenement[] Returns an array of Evenement objects
     //     */

@@ -1,4 +1,3 @@
-{# templates/foire/slider_items.html.twig #}
 {% extends 'baselog.html.twig' %}
 
 {% block title %}Slider Items{% endblock %}
@@ -171,6 +170,49 @@
                 font-size: 5em;
             }
         }
+
+        /* Feedback modal styles */
+        .feedback-button {
+            position: absolute;
+            top: 8%;
+            left: 8%;
+            z-index: 20;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        .feedback-button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .feedback-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 30;
+            width: 400px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+        }
     </style>
 
     <div class="banner">
@@ -183,22 +225,79 @@
                 <p style="text-align: center;">No records found</p>
             {% endfor %}
         </div>
+
         <div class="content">
             <h1 data-content="Craftify">
                 Craftify
             </h1>
             <div class="author">
                 <h2>Craftify Expo</h2>
-               
-                <p>virtual space to explore and buy unique artisanal creations.</p>
+                <p>Virtual space to explore and buy unique artisanal creations.</p>
             </div>
             <div class="momo"></div>
         </div>
+
+        <!-- Feedback Button -->
+        <div class="feedback-button" onclick="openFeedbackModal()">
+            <span>Give Feedback</span>
+        </div>
+
+        <!-- Feedback Modal -->
+        <div id="feedback-modal" class="feedback-modal" style="display: none;">
+            <h3>Your Feedback</h3>
+            <textarea id="feedback-input" placeholder="Enter your feedback..."></textarea>
+            <button onclick="submitFeedback()">Submit</button>
+            <button onclick="closeFeedbackModal()">Close</button>
+        </div>
+
+        <!-- Overlay for Modal -->
+        <div id="feedback-overlay" class="overlay" style="display: none;" onclick="closeFeedbackModal()"></div>
     </div>
 
     <script>
         function redirectTo(url) {
             window.open(url, '_blank');
         }
+
+        function openFeedbackModal() {
+            document.getElementById('feedback-modal').style.display = 'block';
+            document.getElementById('feedback-overlay').style.display = 'block';
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedback-modal').style.display = 'none';
+            document.getElementById('feedback-overlay').style.display = 'none';
+        }
+
+        function submitFeedback() {
+    const feedback = document.getElementById('feedback-input').value;
+    if (!feedback.trim()) {
+        alert('Please enter your feedback!');
+        return;
+    }
+
+    // Send feedback as JSON to the Symfony backend
+    fetch('/submit-feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ feedback: feedback })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+        } else if (data.error) {
+            alert(data.error);
+        }
+        closeFeedbackModal();
+    })
+    .catch(error => {
+        console.error('Error submitting feedback:', error);
+        alert('There was an error submitting your feedback. Please try again.');
+    });
+}
+
     </script>
 {% endblock %}

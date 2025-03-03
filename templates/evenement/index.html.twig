@@ -10,6 +10,39 @@
         <div class="image-text">Liste Évènement</div>
     </div>
 
+    <!-- Search Form (remains on the index page) -->
+    <form method="GET" action="{{ path('app_evenement_search') }}" class="search-form">
+        <input type="text" name="search" placeholder="Search by place" value="{{ app.request.query.get('search') }}" class="search-input">
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
+    <!-- Sorting Options -->
+    <div class="sort-container">
+        <form method="get" action="{{ path('app_evenement_index') }}" class="sort-form">
+            <label for="sort-by" class="sort-label">Sort by:</label>
+            <select name="sortBy" id="sort-by" class="sort-select">
+                <option value="nom" {% if sortBy == 'nom' %}selected{% endif %}>Nom</option>
+                <option value="description" {% if sortBy == 'description' %}selected{% endif %}>Description</option>
+                <option value="dateDebut" {% if sortBy == 'dateDebut' %}selected{% endif %}>Date Début</option>
+                <option value="dateFin" {% if sortBy == 'dateFin' %}selected{% endif %}>Date Fin</option>
+                <option value="lieu" {% if sortBy == 'lieu' %}selected{% endif %}>Lieu</option>
+                <option value="capacite" {% if sortBy == 'capacite' %}selected{% endif %}>Capacité</option>
+                <option value="typeEvenement" {% if sortBy == 'typeEvenement' %}selected{% endif %}>Type Evenement</option>
+                <option value="prix" {% if sortBy == 'prix' %}selected{% endif %}>Prix</option>
+                <option value="organisateur" {% if sortBy == 'organisateur' %}selected{% endif %}>Organisateur</option>
+                <option value="dateCreation" {% if sortBy == 'dateCreation' %}selected{% endif %}>Date Création</option>
+            </select>
+
+            <label for="order" class="sort-label">Order:</label>
+            <select name="order" id="order" class="sort-select">
+                <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascendant</option>
+                <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descendant</option>
+            </select>
+
+            <button type="submit" class="sort-button">Apply</button>
+        </form>
+    </div>
+
     <!-- Table container with horizontal scrolling -->
     <div class="table-container">
         <div class="table-wrapper">
@@ -60,6 +93,20 @@
             </table>
         </div>
 
+        <div class="pagination">
+            {% if currentPage > 1 %}
+                <a href="{{ path('app_evenement_index', {'page': currentPage - 1}) }}" class="prev">Previous</a>
+            {% endif %}
+            
+            {% for page in 1..totalPages %}
+                <a href="{{ path('app_evenement_index', {'page': page}) }}" class="page-link {% if page == currentPage %}active{% endif %}">{{ page }}</a>
+            {% endfor %}
+
+            {% if currentPage < totalPages %}
+                <a href="{{ path('app_evenement_index', {'page': currentPage + 1}) }}" class="next">Next</a>
+            {% endif %}
+        </div>
+
         <!-- Button to create a new event -->
         <div class="create-btn-container">
             <a href="{{ path('app_evenement_new') }}" class="create-btn">Create New</a>
@@ -104,7 +151,91 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* Shadow for readability */
 }
 
-/* Table container */
+/* Search Form Styling */
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.search-input:focus {
+    border-color: rgb(255, 102, 0);
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: rgb(255, 140, 0);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.search-button:hover {
+    background-color: rgb(250, 47, 7);
+}
+
+/* Sorting Form Styling */
+.sort-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sort-label {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.sort-select {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease-in-out;
+}
+
+.sort-select:focus {
+    border-color: rgb(255, 102, 0);
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.sort-button {
+    padding: 10px 20px;
+    background-color: rgb(255, 140, 0);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.sort-button:hover {
+    background-color: rgb(250, 47, 7);
+}
+
+/* Table and Pagination Styling */
 .table-container {
     width: 100%;
     max-width: 1200px;
@@ -114,8 +245,8 @@
 
 .table-wrapper {
     width: 100%;
-    overflow-x: auto; /* Enables horizontal scrolling */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .event-table {
@@ -133,7 +264,6 @@
     border-bottom: 1px solid #ddd;
 }
 
-/* Truncate long description */
 .description {
     max-width: 150px;
     white-space: nowrap;
@@ -152,14 +282,12 @@
     background-color: #FDF1DA;
 }
 
-/* Hover effect for rows */
 .event-table tbody tr:hover {
-    background-color:rgb(221, 144, 71); /* Color when hovered */
+    background-color: rgb(221, 144, 71);
     color: white;
     cursor: pointer;
 }
 
-/* Image Styling in Table */
 .event-image {
     width: 80px;
     height: 60px;
@@ -167,26 +295,62 @@
     border-radius: 8px;
 }
 
-/* Button Styling */
-.create-btn-container {
+.no-records {
     text-align: center;
-    margin-top: 70px;
+    color: #888;
+    padding: 20px;
+    font-size: 18px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-link {
+    padding: 10px 15px;
+    background-color: #ddd;
+    color: #333;
+    text-decoration: none;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.page-link.active {
+    background-color: rgb(255, 140, 0);
+    color: white;
+}
+
+.prev,
+.next {
+    padding: 10px 15px;
+    background-color: rgb(255, 140, 0);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.create-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
 }
 
 .create-btn {
-    background-color: #C89156;
+    padding: 10px 20px;
+    background-color: rgb(255, 140, 0);
     color: white;
-    padding: 15px 30px;
-    border-radius: 10px;
     text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-    font-size: 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
 
 .create-btn:hover {
-    background-color: #B86B2F;
-    color: #fff;
+    background-color: rgb(250, 47, 7);
 }
 </style>
 {% endblock %}

@@ -7,8 +7,17 @@
     <!-- Image container -->
     <div class="image-container">
         <img src="{{ asset('img/mainphoto.png') }}" alt="Event Image" class="event-banner">
-        <div class="image-text">Liste Évènement</div>
+        <div class="image-text">Les Évènements Disponibles</div>
     </div>
+
+    <!-- Flash Notification -->
+    {% if app.session.flashBag.has('success') %}
+        <div id="notif-container">
+            {% for message in app.session.flashBag.get('success') %}
+                <div class="notif-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <!-- Events display in horizontal cards -->
     <div class="event-cards-container">
@@ -24,6 +33,12 @@
                     <p><strong>Type:</strong> {{ evenement.typeEvenement }}</p>
                     <p><strong>Prix:</strong> {{ evenement.prix }} TND</p>
                     <p><strong>Organisateur:</strong> {{ evenement.organisateur }}</p>
+
+                    <!-- Buttons for participation and viewing -->
+                    <div class="event-buttons">
+                        <a href="{{ path('app_participation_neweven') }}" class="btn participate-btn">Participate</a>
+                        <a href="{{ path('app_evenement_front_show', {'id': evenement.id}) }}" class="btn see-btn">See</a>
+                    </div>
                 </div>
             </div>
         {% else %}
@@ -38,7 +53,7 @@
     width: 100%;
     margin: 0 auto;
     padding: 20px;
-    background-color: #D7C7A1; /* Dark beige background */
+    background-color:rgb(255, 236, 207);
 }
 
 /* Image Styling */
@@ -73,7 +88,7 @@
 .event-cards-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
     gap: 20px;
     padding: 20px;
 }
@@ -81,8 +96,8 @@
 /* Individual Event Card */
 .event-card {
     display: flex;
-    width: 900px;
-    background: #fdf1da;
+    width: calc(50% - 10px);
+    background:rgb(248, 241, 230);
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -125,5 +140,69 @@
     text-overflow: ellipsis;
     max-width: 100%;
 }
+
+/* Buttons for Participate and See */
+.event-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.participate-btn {
+    background-color: #56c5b4;
+    color: white;
+}
+
+.participate-btn:hover {
+    background-color: #4fa392;
+}
+
+.see-btn {
+    background-color: #3e2c41;
+    color: white;
+}
+
+.see-btn:hover {
+    background-color: #2c1f2d;
+}
+
+/* Notification Styling */
+#notif-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+    z-index: 1000;
+}
 </style>
+
+<script>
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        const notif = document.getElementById('notif-container');
+        if (notif) {
+            notif.style.opacity = '0';
+            setTimeout(() => {
+                notif.remove();
+            }, 500);
+        }
+    }, 3000);
+</script>
 {% endblock %}

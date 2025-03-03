@@ -31,21 +31,66 @@ final class FoireController extends AbstractController
     }
 
     #[Route('/gg', name: 'foir_front', methods: ['GET'])]
-    public function inno(FoireRepository $foireRepository): Response
+    public function inno(FoireRepository $foireRepository, Request $request): Response
     {
+        // Pagination settings
+        $page = $request->query->getInt('page', 1); // Default to page 1
+        $limit = 1; // Limit the number of Foires per page
+    
+        // Search functionality
+        $searchTerm = $request->query->get('search', '');
+        
+        // Get total number of Foires for pagination
+        $totalFoires = count($foireRepository->findAll());
+        $totalPages = ceil($totalFoires / $limit);
+    
+        // Fetch Foires with search and pagination
+        $queryBuilder = $foireRepository->createQueryBuilder('f')
+            ->where('f.nom LIKE :search')
+            ->setParameter('search', '%' . $searchTerm . '%')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        
+        $foires = $queryBuilder->getQuery()->getResult();
+    
         return $this->render('foire/index.html.twig', [
-            'foires' => $foireRepository->findAll(),
+            'foires' => $foires,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'search' => $searchTerm,
         ]);
     }
-
+    
     #[Route('/xx', name: 'big_foir', methods: ['GET'])]
-    public function giga(FoireRepository $foireRepository): Response
+    public function giga(FoireRepository $foireRepository, Request $request): Response
     {
+        // Pagination settings
+        $page = $request->query->getInt('page', 1); // Default to page 1
+        $limit = 1; // Limit the number of Foires per page
+    
+        // Search functionality
+        $searchTerm = $request->query->get('search', '');
+        
+        // Get total number of Foires for pagination
+        $totalFoires = count($foireRepository->findAll());
+        $totalPages = ceil($totalFoires / $limit);
+    
+        // Fetch Foires with search and pagination
+        $queryBuilder = $foireRepository->createQueryBuilder('f')
+            ->where('f.nom LIKE :search')
+            ->setParameter('search', '%' . $searchTerm . '%')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        
+        $foires = $queryBuilder->getQuery()->getResult();
+    
         return $this->render('foire/dexx.html.twig', [
-            'foires' => $foireRepository->findAll(),
+            'foires' => $foires,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'search' => $searchTerm,
         ]);
     }
-
     #[Route('/new', name: 'app_foire_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

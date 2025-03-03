@@ -11,10 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/participation')]
+//#[Route('/participation')]
 final class ParticipationController extends AbstractController
 {
-    #[Route(name: 'app_participation_index', methods: ['GET'])]
+    #[Route('/participation', name: 'app_participation_index', methods: ['GET'])]
     public function index(ParticipationRepository $participationRepository): Response
     {
         return $this->render('participation/index.html.twig', [
@@ -22,7 +22,7 @@ final class ParticipationController extends AbstractController
         ]);
     }
 
-    #[Route('/parfront', name: 'app_participation_front', methods: ['GET'])]
+    #[Route('/participation/parfront', name: 'app_participation_front', methods: ['GET'])]
     public function front(ParticipationRepository $participationRepository): Response
     {
         return $this->render('participation/front.html.twig', [
@@ -30,7 +30,7 @@ final class ParticipationController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_participation_new', methods: ['GET', 'POST'])]
+    #[Route('/participation/new', name: 'app_participation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $participation = new Participation();
@@ -50,7 +50,31 @@ final class ParticipationController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_participation_show', methods: ['GET'])]
+    #[Route('/participation/neweven', name: 'app_participation_neweven', methods: ['GET', 'POST'])]
+    public function newrelatedevent(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $participation = new Participation();
+        $form = $this->createForm(ParticipationType::class, $participation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($participation);
+            $entityManager->flush();
+
+            // Set a flash message on successful participation
+        $this->addFlash('success', 'Your participation has been recorded successfully!');
+
+
+            return $this->redirectToRoute('app_evenement_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('participation/newev.html.twig', [
+            'participation' => $participation,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_participation_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(ParticipationRepository $repository, string $id): Response
     {
         $participation = $repository->find((int) $id);
@@ -104,4 +128,6 @@ final class ParticipationController extends AbstractController
 
         return $this->redirectToRoute('app_participation_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }
