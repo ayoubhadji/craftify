@@ -4,58 +4,69 @@ namespace App\Form;
 
 use App\Entity\Aventurier;
 use App\Entity\Expedition;
-use App\Repository\ExpeditionRepository;  // ✅ Corrected import
+use App\Repository\ExpeditionRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType; 
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class AventurierType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('nom_code', TextType::class, [
-            'label' => 'Nom de code',
-            'attr' => ['class' => 'form-control'],
-            'required' => true,
-        ])
-        
-            ->add('quetes_terminees', TextType::class, [
-                'label' => 'Quêtes terminées',
+            ->add('nom', TextType::class, [
+                'label' => 'Nom',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
-                'help' => 'Indiquez le nombre de quêtes terminées.',
+                'help' => 'Entrez le nom de l\'aventurier.',
             ])
-            ->add('artefact_possede', TextType::class, [
-                'label' => 'Artefact possédé',
+            ->add('prenom', TextType::class, [
+                'label' => 'Prénom',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
-                'help' => 'Entrez le nom de l\'artefact possédé.',
+                'help' => 'Entrez le prénom de l\'aventurier.',
             ])
-            ->add('compagne_creatif', TextType::class, [
-                'label' => 'Compagnon créatif',
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
-                'help' => 'Entrez le nom du compagnon créatif.',
+                'help' => 'Entrez l\'email de l\'aventurier.',
             ])
-            ->add('badge_legendaire', TextType::class, [
-                'label' => 'Badge légendaire',
+            ->add('dateInscription', DateType::class, [
+                'required' => false, // Le champ peut être vide
+                'widget' => 'single_text', // Affiche un champ de saisie de date
+                'empty_data' => null, // Si aucun choix n'est fait, `null` est envoyé
+            ])
+            
+            ->add('statut', ChoiceType::class, [
+                'label' => 'Statut',
+                'choices' => [
+                    'Actif' => 'actif',
+                    'Inactif' => 'inactif',
+                    'En pause' => 'en pause',
+                ],
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
-                'help' => 'Indiquez le badge légendaire que possède l\'aventurier.',
+                'help' => 'Sélectionnez le statut de l\'aventurier.',
             ])
-            ->add('signe_distinctif', TextType::class, [
-                'label' => 'Signe distinctif',
-                'attr' => ['class' => 'form-control'],
-                'required' => true,
-                'help' => 'Décrivez un signe distinctif de cet aventurier.',
+           
+            ->add('phoneNumber', TextType::class, [
+                'required' => false,
+                'label' => 'Numéro de téléphone',
+                'data' => '+216', // Le préfixe +216 est ajouté par défaut
+                'attr' => [
+                    'placeholder' => 'Entrez le numéro sans le préfixe',
+                ],
             ])
-            // ✅ Corrected field name to match entity relationship
             ->add('expeditions', EntityType::class, [
                 'class' => Expedition::class,
-                'choice_label' => 'nomExpedition',
+                'choice_label' => 'titre',
                 'multiple' => true,
                 'expanded' => true,
                 'label' => 'Expéditions',
@@ -63,7 +74,7 @@ class AventurierType extends AbstractType
                 'required' => false,
                 'query_builder' => function (ExpeditionRepository $repository) {
                     return $repository->createQueryBuilder('e')
-                        ->orderBy('e.nomExpedition', 'ASC');
+                        ->orderBy('e.titre', 'ASC');
                 },
                 'help' => 'Sélectionnez les expéditions auxquelles cet aventurier a participé.',
             ]);

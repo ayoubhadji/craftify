@@ -13,28 +13,24 @@
                     <td>{{ aventurier.id }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Nom de code</th>
-                    <td>{{ aventurier.nomCode }}</td>
+                    <th scope="row">Nom</th>
+                    <td>{{ aventurier.nom }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Quêtes terminées</th>
-                    <td>{{ aventurier.quetesTerminees }}</td>
+                    <th scope="row">Prénom</th>
+                    <td>{{ aventurier.prenom }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Artefact possédé</th>
-                    <td>{{ aventurier.artefactPossede }}</td>
+                    <th scope="row">Email</th>
+                    <td>{{ aventurier.email }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Compagnon créatif</th>
-                    <td>{{ aventurier.compagneCreatif }}</td>
+                    <th scope="row">Date d'inscription</th>
+                    <td>{{ aventurier.dateInscription ? aventurier.dateInscription|date('d/m/Y') : 'Non renseignée' }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Badge légendaire</th>
-                    <td>{{ aventurier.badgeLegendaire }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Signe distinctif</th>
-                    <td>{{ aventurier.signeDistinctif }}</td>
+                    <th scope="row">Statut</th>
+                    <td>{{ aventurier.statut }}</td>
                 </tr>
                 <!-- Display expeditions -->
                 <tr>
@@ -43,7 +39,7 @@
                         {% if aventurier.expeditions is not empty %}
                             <ul>
                                 {% for expedition in aventurier.expeditions %}
-                                    <li>{{ expedition.nomExpedition }}</li>  <!-- Corrected 'nom' to 'nomExpedition' -->
+                                    <li>{{ expedition.titre }}</li> 
                                 {% endfor %}
                             </ul>
                         {% else %}

@@ -7,12 +7,51 @@
         <h2 class="text-center text-dark fw-bold">Liste des Expéditions</h2>
 
         <div class="d-flex justify-content-between mb-3">
-            <!-- Generate Expedition Button -->
-
-            <!-- Create New Expedition Button -->
+            <!-- Créer une nouvelle expédition -->
             <a href="{{ path('app_expedition_new') }}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Créer une nouvelle expédition
             </a>
+        </div>
+
+        <!-- Formulaire de filtrage -->
+        <div class="d-flex justify-content-between mb-3">
+            <form method="get" class="form-inline">
+                <!-- Liste déroulante pour Titre -->
+                <select name="titre" class="form-control">
+                    <option value="">Filtrer par titre</option>
+                    {% for expedition in expeditions %}
+                        <option value="{{ expedition.titre }}" {% if app.request.get('titre') == expedition.titre %}selected{% endif %}>
+                            {{ expedition.titre }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Liste déroulante pour Aventurier -->
+                <select name="aventurier" class="form-control">
+                    <option value="">Filtrer par Aventurier</option>
+                    {% for expedition in expeditions %}
+                        {% if expedition.aventurier %}
+                            <option value="{{ expedition.aventurier.id }}" {% if app.request.get('aventurier') == expedition.aventurier.id %}selected{% endif %}>
+                                {{ expedition.aventurier.prenom ~ ' ' ~ expedition.aventurier.nom }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <!-- Liste déroulante pour Objectif -->
+                <select name="objectif" class="form-control">
+                    <option value="">Filtrer par objectif</option>
+                    {% for expedition in expeditions %}
+                        <option value="{{ expedition.objectif }}" {% if app.request.get('objectif') == expedition.objectif %}selected{% endif %}>
+                            {{ expedition.objectif }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filtrer
+                </button>
+            </form>
         </div>
 
         <div class="table-responsive">
@@ -20,62 +59,49 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Nom</th>
-                        <th>Univers</th>
-                        <th>Carte</th>
-                        <th>Quêtes</th>
-                        <th>Objet Magique</th>
-                        <th>Gardien</th>
-                        <th>Durée</th>
-                        <th>Secret</th>
-                        <th>Relique</th>
+                        <th>Titre</th>
+                        <th>Objectif</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                        <th>Video</th>
+                        <th>Aventurier</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for expedition in expeditions %}
-                    <tr>
-                        <td>{{ expedition.id }}</td>
-                        <td>{{ expedition.nomExpedition }}</td>
-                        <td>{{ expedition.univers }}</td>
-                        <td>
-                            <a href="{{ expedition.cartTresorUrl }}" target="_blank" class="text-primary text-decoration-none">
-                                {{ expedition.cartTresorUrl|slice(0, 20) }}...
-                            </a>
-                        </td>
-                        <td>{{ expedition.quetesDispo }}</td>
-                        <td>{{ expedition.objetMagique }}</td>
-                        <td>{{ expedition.gardienArtisanaux }}</td>
-                        <td>{{ expedition.dureeMystique }}</td>
-                        <td>{{ expedition.secretCache }}</td>
-                        <td>{{ expedition.reliqueFinale }}</td>
-                        <td>
-                            <a href="{{ path('app_expedition_show', {'id': expedition.id}) }}" 
-                               class="btn btn-info btn-sm text-white">
-                                <i class="fas fa-eye"></i> Voir
-                            </a>
-                            <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}" 
-                               class="btn btn-warning btn-sm text-dark">
-                                <i class="fas fa-edit"></i> Modifier
-                            </a>
-                            <form method="post" action="{{ path('app_expedition_delete', {'id': expedition.id}) }}" 
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette expédition ?');" 
-                                  class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ expedition.id) }}">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="11" class="text-center text-muted">Aucune expédition trouvée</td>
-                    </tr>
-                {% endfor %}
+                    {% for expedition in expeditions %}
+                        <tr>
+                            <td>{{ expedition.id }}</td>
+                            <td>{{ expedition.titre }}</td>
+                            <td>{{ expedition.objectif }}</td>
+                            <td>{{ expedition.datedebut|date('d/m/Y') }}</td>
+                            <td>{{ expedition.datefin|date('d/m/Y') }}</td>
+                            <td>{{ expedition.videoUrl }}</td>
+                            <td>{{ expedition.aventurier ? expedition.aventurier.prenom ~ ' ' ~ expedition.aventurier.nom : 'Non attribué' }}</td>
+                            <td>
+                                <a href="{{ path('app_expedition_show', {'id': expedition.id}) }}" class="btn btn-info btn-sm text-white" title="Voir l'expédition">
+                                    <i class="fas fa-eye"></i> Voir
+                                </a>
+                                <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}" class="btn btn-warning btn-sm text-dark" title="Modifier l'expédition">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <form method="post" action="{{ path('app_expedition_delete', {'id': expedition.id}) }}" 
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette expédition ?');" 
+                                      class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ expedition.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Supprimer l'expédition">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">Aucune expédition trouvée</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
 {% endblock %}

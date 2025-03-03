@@ -1,0 +1,36 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Vérification de l'Email{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center">Bienvenue, aventurier !</h1>
+    
+    {# Affichage des messages flash #}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    
+    {# Formulaire de saisie de l'email #}
+    <div class="card shadow-lg p-4 bg-light rounded mx-auto" style="max-width: 500px;">
+      <form action="{{ path('app_aventurier_check') }}" method="get">
+        <div class="mb-3">
+            <label for="email" class="form-label fw-bold">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Entrez votre email" required>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Vérifier l'Email</button>
+        </div>
+    </form>
+    </div>
+
+    <div class="text-center mt-4">
+        <p>Vous n'avez pas encore d'email ?</p>
+        <a href="{{ path('app_aventurier_new') }}" class="btn btn-secondary">Créer un nouvel aventurier</a>
+    </div>
+</div>
+{% endblock %}

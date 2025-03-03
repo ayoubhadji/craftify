@@ -1,0 +1,45 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Détails de l'Aventurier{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Détails de l'Aventurier</h1>
+
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th scope="row">Nom</th>
+                    <td>{{ aventurier.nom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Prénom</th>
+                    <td>{{ aventurier.prenom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Email</th>
+                    <td>{{ aventurier.email }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Date d'inscription</th>
+                    <td>{{ aventurier.dateInscription ? aventurier.dateInscription|date('d/m/Y') : 'Non renseignée' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Ajouter le bouton pour passer le quiz -->
+        <div class="text-center mt-4">
+        {% if quiz %}
+    <a href="{{ path('app_quiz_passer', { 'quizId': quiz.id, 'id': aventurier.id }) }}">Passer le Quiz</a>
+{% else %}
+    <p>No quiz available for this expedition.</p>
+{% endif %}
+
+
+
+
+              
+            
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+
+<title>New AventurierQuiz</title>
+
+{% block body %}
+    <h1>Create new AventurierQuiz</h1>
+
+    {{ include('aventurier_quiz/_form.html.twig') }}
+
+    <a href="{{ path('app_aventurier_quiz_index') }}">back to list</a>
+{% endblock %}

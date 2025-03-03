@@ -40,4 +40,30 @@ class ExpeditionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    // src/Repository/ExpeditionRepository.php
+public function findByFilters(?string $titre, ?string $aventurierId, ?string $objectif)
+{
+    $queryBuilder = $this->createQueryBuilder('e');
+
+    // Filtrer par titre
+    if ($titre) {
+        $queryBuilder->andWhere('e.titre LIKE :titre')
+                     ->setParameter('titre', '%' . $titre . '%');
+    }
+
+    // Filtrer par aventurier
+    if ($aventurierId) {
+        $queryBuilder->andWhere('e.aventurier = :aventurier')
+                     ->setParameter('aventurier', $aventurierId);
+    }
+
+    // Filtrer par objectif
+    if ($objectif) {
+        $queryBuilder->andWhere('e.objectif LIKE :objectif')
+                     ->setParameter('objectif', '%' . $objectif . '%');
+    }
+
+    return $queryBuilder->getQuery()->getResult();
+}
+
 }

@@ -1,0 +1,34 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Résultats du Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Résultats de votre passage au quiz</h1>
+        
+        <div class="card shadow-sm p-4 mb-4">
+            <h3 class="text-primary">Votre score : {{ AventurierQuiz.score }} sur {{ quiz.questions|length }}</h3>
+            <p class="lead">Statut : <strong>{{ AventurierQuiz.statut }}</strong></p>
+
+            {% if AventurierQuiz.score < 70 %}
+                <div class="alert alert-danger mt-3">
+                    <strong>Vous n'avez pas réussi. Essayez à nouveau !</strong>
+                </div>
+            {% else %}
+                <div class="alert alert-success mt-3">
+                    <strong>Félicitations, vous avez réussi !</strong>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if AventurierQuiz.certificatDelivre %}
+            <div class="text-center mb-4">
+                <a href="{{ path('app_quiz_download_certificat', {'id': AventurierQuiz.id}) }}" class="btn btn-success btn-lg">Télécharger votre certificat</a>
+            </div>
+        {% endif %}
+
+        <div class="text-center">
+            <a href="{{ path('app_expedition_index1') }}" class="btn btn-primary btn-lg">Retour </a>
+        </div>
+    </div>
+{% endblock %}

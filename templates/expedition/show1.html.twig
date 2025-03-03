@@ -1,0 +1,49 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Détails de l'Expédition{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center text-dark fw-bold mb-4">Détails de l'Expédition</h2>
+
+    <div class="card shadow-lg p-4 mb-4">
+        <table class="table table-striped table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <th class="bg-primary text-white">Titre de l'expédition</th>
+                    <td>{{ expedition.titre }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Objectif</th>
+                    <td>{{ expedition.objectif }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Date de début</th>
+                    <td>{{ expedition.datedebut ? expedition.datedebut|date('d/m/Y') : 'Non spécifiée' }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-primary text-white">Date de fin</th>
+                    <td>{{ expedition.datefin ? expedition.datefin|date('d/m/Y') : 'Non spécifiée' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('app_expedition_vd', {'id': expedition.id}) }}" class="btn btn-info btn-sm text-white" title="Voir l'expédition">
+                <i class="fas fa-eye"></i> Voir
+            </a>
+            <a href="{{ path('app_expedition_index1') }}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-2"></i> Retour
+            </a>
+        </div>
+    </div>
+
+    <h3 class="text-center text-dark mt-4">Liste des expéditions</h3>
+
+    <div class="card-footer text-center py-4">
+        <a href="{{ path('app_aventurier_check') }}" class="btn btn-primary btn-lg text-white px-5 py-3">
+            Participer à l'Expédition
+        </a>
+    </div>
+</div>
+{% endblock %}

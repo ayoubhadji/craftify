@@ -14,51 +14,42 @@
                     <td>{{ expedition.id }}</td>
                 </tr>
                 <tr>
-                    <th class="bg-primary text-white">Nom de l'expédition</th>
-                    <td>{{ expedition.nomExpedition }}</td>
+                    <th class="bg-primary text-white">Titre de l'expédition</th>
+                    <td>{{ expedition.titre }}</td>
                 </tr>
                 <tr>
-                    <th class="bg-primary text-white">Univers</th>
-                    <td>{{ expedition.univers }}</td>
+                    <th class="bg-primary text-white">Objectif</th>
+                    <td>{{ expedition.objectif }}</td>
                 </tr>
                 <tr>
-                    <th class="bg-primary text-white">Carte au trésor</th>
-                    <td>
-                        <a href="{{ expedition.cartTresorUrl }}" target="_blank" class="text-primary text-decoration-none">
-                            {{ expedition.cartTresorUrl|slice(0, 30) }}...
-                        </a>
-                    </td>
+                    <th class="bg-primary text-white">Date de début</th>
+                    <td>{{ expedition.datedebut ? expedition.datedebut|date('d/m/Y') : 'Non spécifiée' }}</td>
                 </tr>
                 <tr>
-                    <th class="bg-primary text-white">Quêtes disponibles</th>
-                    <td>{{ expedition.quetesDispo }}</td>
+                    <th class="bg-primary text-white">Date de fin</th>
+                    <td>{{ expedition.datefin ? expedition.datefin|date('d/m/Y') : 'Non spécifiée' }}</td>
                 </tr>
+               
+               
                 <tr>
-                    <th class="bg-primary text-white">Objet magique</th>
-                    <td>{{ expedition.objetMagique }}</td>
+                    <th class="bg-primary text-white">Aventurier</th>
+                    <td>{{ expedition.aventurier ? expedition.aventurier.prenom ~ ' ' ~ expedition.aventurier.nom : 'Non attribué' }}</td>
                 </tr>
+               
                 <tr>
-                    <th class="bg-primary text-white">Gardien artisanal</th>
-                    <td>{{ expedition.gardienArtisanaux }}</td>
-                </tr>
-                <tr>
-                    <th class="bg-primary text-white">Durée mystique</th>
-                    <td>{{ expedition.dureeMystique }}</td>
-                </tr>
-                <tr>
-                    <th class="bg-primary text-white">Secret caché</th>
-                    <td>{{ expedition.secretCache }}</td>
-                </tr>
-                <tr>
-                    <th class="bg-primary text-white">Relique finale</th>
-                    <td>{{ expedition.reliqueFinale }}</td>
+                  <th class="bg-primary text-white">Statut</th>
+                    <td>{{ expedition.videoUrl }}</td>  
+                    
                 </tr>
             </tbody>
         </table>
+     
+ 
+       
     </div>
 
     <div class="d-flex justify-content-between mt-4">
-        <!-- Bouton Retour -->
+        <!-- Retour à la liste des expéditions -->
         <a href="{{ path('app_expedition_index') }}" class="btn btn-outline-primary d-flex align-items-center px-4 py-2">
             <i class="fas fa-arrow-left me-2"></i> Retour à la liste
         </a>
@@ -68,6 +59,7 @@
             <a href="{{ path('app_expedition_edit', {'id': expedition.id}) }}" class="btn btn-warning d-flex align-items-center px-4 py-2 me-3">
                 <i class="fas fa-edit me-2"></i> Modifier
             </a>
+           <a href="{{ path('app_quiz_new', {'expeditionId': expedition.id}) }}">Choisir cette expédition</a>
 
             <!-- Formulaire de suppression sécurisé avec CSRF Token -->
             <form action="{{ path('app_expedition_delete', {'id': expedition.id}) }}" method="post" 

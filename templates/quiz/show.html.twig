@@ -1,0 +1,47 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Nouveau quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ quiz.nom }}</h1>
+
+        <!-- Détails du quiz -->
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ quiz.id }}</td>
+                </tr>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ quiz.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Durée maximale</th>
+                    <td>{{ quiz.dureeMax }} minutes</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Section des questions -->
+        <h3>Questions du quiz</h3>
+        <ul class="list-group">
+            {% for question in quiz.questions %}
+                <li class="list-group-item">
+                    <strong>{{ question.question }}</strong><br>
+                    <em>Réponse correcte : {{ question.reponseCorrecte }}</em>
+                </li>
+            {% else %}
+                <p>Aucune question disponible pour ce quiz.</p>
+            {% endfor %}
+        </ul>
+
+        <div class="mt-4">
+            <!-- Boutons d'actions -->
+            <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning">Modifier</a>
+            {{ include('quiz/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

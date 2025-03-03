@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificat de Réussite</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Times New Roman', serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .certificat {
+            background-color: #fff;
+            border: 15px solid #006400;
+            border-radius: 15px;
+            padding: 50px;
+            max-width: 900px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #006400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .certificate-title {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #B8860B;
+            text-decoration: underline;
+            margin-bottom: 30px;
+        }
+        .name {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #8B4513;
+            margin: 15px 0;
+        }
+        .expedition {
+            font-size: 1.6em;
+            font-weight: normal;
+            color: #4682B4;
+            margin-bottom: 20px;
+        }
+        .body-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+            margin: 15px 0;
+            color: #444;
+        }
+        .footer {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 40px;
+            font-style: italic;
+        }
+        .date {
+            font-size: 1.4em;
+            color: #333;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificat">
+        <div class="header">Certificat Officiel</div>
+        <div class="certificate-title">Certificat de Réussite</div>
+        <p class="body-text">Ce certificat est décerné à :</p>
+        <div class="name">{{ aventurier.nom }} {{ aventurier.prenom }}</div>
+        <p class="expedition">Pour l'achèvement de l'expédition : {{ expedition.titre }}</p>
+        <p class="body-text">En reconnaissance de sa réussite exemplaire et de son engagement sans faille.</p>
+        <p class="footer">Ce certificat témoigne de la réussite exceptionnelle de l'individu dans son parcours d'aventure et de développement.</p>
+        <p class="date">Date : {{ currentDate|date('d/m/Y') }}</p>
+    </div>
+</body>
+</html>

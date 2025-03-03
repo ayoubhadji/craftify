@@ -10,12 +10,11 @@
             <thead class="thead-light">
                 <tr>
                     <th>ID</th>
-                    <th>Nom de Code</th>
-                    <th>Quêtes Terminées</th>
-                    <th>Artefact Possédé</th>
-                    <th>Compagnon Créatif</th>
-                    <th>Badge Légendaire</th>
-                    <th>Signe Distinctif</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Date d'Inscription</th>
+                    <th>Statut</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -23,12 +22,11 @@
                 {% for aventurier in aventuriers %}
                     <tr>
                         <td>{{ aventurier.id }}</td>
-                        <td>{{ aventurier.nomCode }}</td>
-                        <td>{{ aventurier.quetesTerminees }}</td>
-                        <td>{{ aventurier.artefactPossede }}</td>
-                        <td>{{ aventurier.compagneCreatif }}</td>
-                        <td>{{ aventurier.badgeLegendaire }}</td>
-                        <td>{{ aventurier.signeDistinctif }}</td>
+                        <td>{{ aventurier.nom }}</td>
+                        <td>{{ aventurier.prenom }}</td>
+                        <td>{{ aventurier.email }}</td>
+                        <td>{{ aventurier.dateInscription ? aventurier.dateInscription|date('d/m/Y') : 'Non renseignée' }}</td>
+                        <td>{{ aventurier.statut }}</td>
                         <td>
                             <a href="{{ path('app_aventurier_show', {'id': aventurier.id}) }}" class="btn btn-info btn-sm">Afficher</a>
                             <a href="{{ path('app_aventurier_edit', {'id': aventurier.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
@@ -36,14 +34,12 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="8" class="text-center">Aucun enregistrement trouvé</td>
+                        <td colspan="7" class="text-center">Aucun enregistrement trouvé</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <div class="text-center mt-4">
-            <a href="{{ path('app_aventurier_new') }}" class="btn btn-success">Créer un Nouvel Aventurier</a>
-        </div>
+        
     </div>
 {% endblock %}

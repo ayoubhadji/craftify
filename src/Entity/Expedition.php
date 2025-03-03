@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\ExpeditionRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-
+#[ApiResource(
+    normalizationContext: ['groups' => ['expedition:read']],
+    denormalizationContext: ['groups' => ['expedition:write']]
+)]
 #[ORM\Entity(repositoryClass: ExpeditionRepository::class)]
 class Expedition
 {
@@ -19,70 +23,62 @@ class Expedition
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom de l'expédition est obligatoire.")]
+    #[Assert\NotBlank(message: "Le titre de l'expédition est obligatoire.")]
     #[Assert\Length(
         min: 3,
         max: 255,
-        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+        minMessage: "Le titre doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères."
     )]
-    private ?string $nomExpedition = null;
-
-    #[ORM\Column(length: 100)]
-    #[Assert\NotBlank(message: "L'univers est obligatoire.")]
-    #[Assert\Length(
-        max: 100,
-        maxMessage: "L'univers ne peut pas dépasser {{ limit }} caractères."
-    )]
-    private ?string $univers = null;
-
-    #[ORM\Column(name: "cart_tresor_url", length: 255)]
-    #[Assert\NotBlank(message: "L'URL de la carte au trésor est obligatoire.")]
-    #[Assert\Url(message: "L'URL de la carte doit être valide.")]
-    private ?string $cart_tresor_url = null;
+    private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Les quêtes disponibles doivent être renseignées.")]
-    private ?string $quetesDispo = null;
+    #[Assert\NotBlank(message: "L'objectif de l'expédition est obligatoire.")]
+    private ?string $objectif = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "L'objet magique doit être renseigné.")]
-    private ?string $objetMagique = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de début est obligatoire.")]
+    private ?\DateTimeInterface $dateDebut = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Les gardiens artisanaux doivent être renseignés.")]
-    private ?string $gardien_artisanaux = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de fin est obligatoire.")]
+    #[Assert\GreaterThan(propertyPath: "dateDebut", message: "La date de fin doit être après la date de début.")]
+    private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: "La durée mystique est obligatoire.")]
-    #[Assert\Length(
-        max: 50,
-        maxMessage: "La durée mystique ne peut pas dépasser {{ limit }} caractères."
-    )]
-    private ?string $dureeMystique = null;
+    #[ORM\ManyToOne(targetEntity: Aventurier::class, inversedBy: 'expeditions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Aventurier $aventurier = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Le secret caché doit être renseigné.")]
-    private ?string $secretCache = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $videoUrl = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La relique finale est obligatoire.")]
-    #[Assert\Length(
-        max: 255,
-        maxMessage: "Le nom de la relique finale ne peut pas dépasser {{ limit }} caractères."
-    )]
-    private ?string $reliqueFinale = null;
+    #[ORM\OneToMany(mappedBy: "expedition", targetEntity: Quiz::class)]
+    private Collection $quizzes;
 
-    /**
-     * @var Collection<int, Aventurier>
-     */
+    // Add missing property
     #[ORM\ManyToMany(targetEntity: Aventurier::class, inversedBy: 'expeditions')]
-    //#[ORM\JoinTable(name: 'aventurier_expedition')]
     private Collection $aventuriers;
 
     public function __construct()
     {
+        $this->quizzes = new ArrayCollection();
         $this->aventuriers = new ArrayCollection();
+    }
+
+    public function getQuizzes(): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function getVideoUrl(): ?string
+    {
+        return $this->videoUrl;
+    }
+
+    public function setVideoUrl(?string $videoUrl): self
+    {
+        $this->videoUrl = $videoUrl;
+        return $this;
     }
 
     public function getId(): ?int
@@ -90,129 +86,73 @@ class Expedition
         return $this->id;
     }
 
-    public function getNomExpedition(): ?string
+    public function getTitre(): ?string
     {
-        return $this->nomExpedition;
+        return $this->titre;
     }
 
-    public function setNomExpedition(string $nomExpedition): static
+    public function setTitre(string $titre): static
     {
-        $this->nomExpedition = $nomExpedition;
+        $this->titre = $titre;
         return $this;
     }
 
-    public function getUnivers(): ?string
+    public function getObjectif(): ?string
     {
-        return $this->univers;
+        return $this->objectif;
     }
 
-    public function setUnivers(string $univers): static
+    public function setObjectif(string $objectif): static
     {
-        $this->univers = $univers;
+        $this->objectif = $objectif;
         return $this;
     }
 
-    public function getCartTresorUrl(): ?string
+    public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->cart_tresor_url;
+        return $this->dateDebut;
     }
 
-    public function setCartTresorUrl(string $cart_tresor_url): self
+    public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
-        $this->cart_tresor_url = $cart_tresor_url;
+        $this->dateDebut = $dateDebut;
         return $this;
     }
 
-    public function getQuetesDispo(): ?string
+    public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->quetesDispo;
+        return $this->dateFin;
     }
 
-    public function setQuetesDispo(string $quetesDispo): static
+    public function setDateFin(\DateTimeInterface $dateFin): static
     {
-        $this->quetesDispo = $quetesDispo;
+        $this->dateFin = $dateFin;
         return $this;
     }
 
-    public function getObjetMagique(): ?string
+    public function getAventurier(): ?Aventurier
     {
-        return $this->objetMagique;
+        return $this->aventurier;
     }
 
-    public function setObjetMagique(string $objetMagique): static
+    public function setAventurier(Aventurier $aventurier): static
     {
-        $this->objetMagique = $objetMagique;
+        $this->aventurier = $aventurier;
         return $this;
     }
 
-    public function getGardienArtisanaux(): ?string
-    {
-        return $this->gardien_artisanaux;
-    }
-
-    public function setGardienArtisanaux(string $gardien_artisanaux): static
-    {
-        $this->gardien_artisanaux = $gardien_artisanaux;
-        return $this;
-    }
-
-    public function getDureeMystique(): ?string
-    {
-        return $this->dureeMystique;
-    }
-
-    public function setDureeMystique(string $dureeMystique): static
-    {
-        $this->dureeMystique = $dureeMystique;
-        return $this;
-    }
-
-    public function getSecretCache(): ?string
-    {
-        return $this->secretCache;
-    }
-
-    public function setSecretCache(string $secretCache): static
-    {
-        $this->secretCache = $secretCache;
-        return $this;
-    }
-
-    public function getReliqueFinale(): ?string
-    {
-        return $this->reliqueFinale;
-    }
-
-    public function setReliqueFinale(string $reliqueFinale): static
-    {
-        $this->reliqueFinale = $reliqueFinale;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Aventurier>
-     */
-    public function getAventuriers(): Collection
-    {
-        return $this->aventuriers;
-    }
-
-    public function addAventurier(Aventurier $aventurier): static
+    // Methods to add/remove aventurier (if applicable for Many-to-Many)
+    public function addAventurier(Aventurier $aventurier): self
     {
         if (!$this->aventuriers->contains($aventurier)) {
-            $this->aventuriers->add($aventurier);
-            $aventurier->addExpedition($this);
+            $this->aventuriers[] = $aventurier;
         }
-
         return $this;
     }
 
-    public function removeAventurier(Aventurier $aventurier): static
+    public function removeAventurier(Aventurier $aventurier): self
     {
-        if ($this->aventuriers->removeElement($aventurier)) {
-            $aventurier->removeExpedition($this);
-        }
-
+        $this->aventuriers->removeElement($aventurier);
         return $this;
     }
 }

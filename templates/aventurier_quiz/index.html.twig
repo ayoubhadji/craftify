@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<title>AventurierQuiz index</title>
+
+{% block body %}
+    <h1>AventurierQuiz index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Score</th>
+                <th>DatePassage</th>
+                <th>Statut</th>
+                <th>CertificatDelivre</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for aventurier_quiz in aventurier_quizzes %}
+            <tr>
+                <td>{{ aventurier_quiz.id }}</td>
+                <td>{{ aventurier_quiz.score }}</td>
+                <td>{{ aventurier_quiz.datePassage ? aventurier_quiz.datePassage|date('Y-m-d') : '' }}</td>
+                <td>{{ aventurier_quiz.statut }}</td>
+                <td>{{ aventurier_quiz.certificatDelivre ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_aventurier_quiz_show', {'id': aventurier_quiz.id}) }}">show</a>
+                    <a href="{{ path('app_aventurier_quiz_edit', {'id': aventurier_quiz.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_aventurier_quiz_new') }}">Create new</a>
+{% endblock %}

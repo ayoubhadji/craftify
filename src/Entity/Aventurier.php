@@ -3,13 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\AventurierRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: AventurierRepository::class)]
+#[UniqueEntity(fields: ["email"], message: "L'email est déjà utilisé.")]
 class Aventurier
 {
     #[ORM\Id]
@@ -18,131 +20,139 @@ class Aventurier
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom de code est obligatoire.")]
-    #[Assert\Length(min: 3, max: 255, minMessage: "Le nom de code doit contenir au moins 3 caractères.")]
-    private ?string $nom_code = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Les quêtes terminées doivent être renseignées.")]
-    private ?string $quetes_terminees = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "L'artefact possédé est obligatoire.")]
-    private ?string $artefact_possede = null;
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\Length(min: 2, max: 255, minMessage: "Le nom doit contenir au moins 2 caractères.")]
+    private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le compagnon créatif est obligatoire.")]
-    private ?string $compagne_creatif = null;
+    #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
+    #[Assert\Length(min: 2, max: 255, minMessage: "Le prénom doit contenir au moins 2 caractères.")]
+    private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le badge légendaire est obligatoire.")]
-    private ?string $badge_legendaire = null;
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message: "L'email doit être valide.")]
+    private ?string $email = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Le signe distinctif est obligatoire.")]
-    private ?string $signe_distinctif = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date d'inscription est obligatoire.")]
+    private ?\DateTimeInterface $dateInscription = null;
 
-    /**
-     * @var Collection<int, Expedition>
-     */
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le statut est obligatoire.")]
+    #[Assert\Choice(choices: ["actif", "inactif", "en pause"], message: "Le statut doit être 'actif', 'inactif' ou 'en pause'.")]
+    private ?string $statut = null;
+
     #[ORM\ManyToMany(targetEntity: Expedition::class, inversedBy: 'aventuriers')]
+    #[ORM\JoinTable(name: 'aventurier_expedition')]
     private Collection $expeditions;
 
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private ?string $phoneNumber = null;
+
+    // Constructor
     public function __construct()
     {
         $this->expeditions = new ArrayCollection();
+        $this->dateInscription = new \DateTime(); // Définit la date actuelle
     }
+
+    // Getter and Setter methods
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNomCode(): ?string
+    public function getNom(): ?string
     {
-        return $this->nom_code;
+        return $this->nom;
     }
 
-    public function setNomCode(string $nom_code): static
+    public function setNom(string $nom): static
     {
-        $this->nom_code = $nom_code;
+        $this->nom = trim($nom);
         return $this;
     }
 
-    public function getQuetesTerminees(): ?string
+    public function getPrenom(): ?string
     {
-        return $this->quetes_terminees;
+        return $this->prenom;
     }
 
-    public function setQuetesTerminees(string $quetes_terminees): static
+    public function setPrenom(string $prenom): static
     {
-        $this->quetes_terminees = $quetes_terminees;
+        $this->prenom = trim($prenom);
         return $this;
     }
 
-    public function getArtefactPossede(): ?string
+    public function getEmail(): ?string
     {
-        return $this->artefact_possede;
+        return $this->email;
     }
 
-    public function setArtefactPossede(string $artefact_possede): static
+    public function setEmail(string $email): static
     {
-        $this->artefact_possede = $artefact_possede;
+        $this->email = trim($email);
         return $this;
     }
 
-    public function getCompagneCreatif(): ?string
+    public function getDateInscription(): ?\DateTimeInterface
     {
-        return $this->compagne_creatif;
+        return $this->dateInscription;
     }
 
-    public function setCompagneCreatif(string $compagne_creatif): static
+    public function setDateInscription(\DateTimeInterface $dateInscription): static
     {
-        $this->compagne_creatif = $compagne_creatif;
+        $this->dateInscription = $dateInscription;
         return $this;
     }
 
-    public function getBadgeLegendaire(): ?string
+    public function getStatut(): ?string
     {
-        return $this->badge_legendaire;
+        return $this->statut;
     }
 
-    public function setBadgeLegendaire(string $badge_legendaire): static
+    public function setStatut(string $statut): static
     {
-        $this->badge_legendaire = $badge_legendaire;
+        $this->statut = trim($statut);
         return $this;
     }
 
-    public function getSigneDistinctif(): ?string
-    {
-        return $this->signe_distinctif;
-    }
-
-    public function setSigneDistinctif(string $signe_distinctif): static
-    {
-        $this->signe_distinctif = $signe_distinctif;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Expedition>
-     */
+    // Get the expeditions (ManyToMany relationship)
     public function getExpeditions(): Collection
     {
         return $this->expeditions;
     }
 
-    public function addExpedition(Expedition $expedition): static
+    // Add an expedition to the collection
+    public function addExpedition(Expedition $expedition): self
     {
         if (!$this->expeditions->contains($expedition)) {
-            $this->expeditions->add($expedition);
+            $this->expeditions[] = $expedition;
+            $expedition->addAventurier($this);  
         }
         return $this;
     }
 
-    public function removeExpedition(Expedition $expedition): static
+    // Remove an expedition from the collection
+    public function removeExpedition(Expedition $expedition): self
     {
-        $this->expeditions->removeElement($expedition);
+        if ($this->expeditions->contains($expedition)) {
+            $this->expeditions->removeElement($expedition);
+            $expedition->removeAventurier($this);  // Synchroniser l'autre côté de la relation
+        }
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
         return $this;
     }
 }

@@ -1,0 +1,137 @@
+{% extends 'baselog.html.twig' %}
+
+{% block title %}Passer le quiz{% endblock %}
+
+{% block body %}
+    <div class="quiz-container">
+        <h1 class="quiz-title">Passer le quiz: {{ quiz.nom }}</h1>
+
+        <!-- Timer Display -->
+        <div id="timer" class="timer">
+            <span>Temps restant: </span><span id="time">5m 00s</span>
+        </div>
+
+        <form method="POST" class="quiz-form">
+            {% for question in questions %}
+                <div class="question">
+                    <label class="question-label">{{ question.question }}</label>
+                    <div class="answers">
+                        {% for reponse in question.reponses %}
+                            <div class="answer-option">
+                                <input type="radio" name="reponse_{{ question.id }}" value="{{ reponse.id }}" id="reponse_{{ question.id }}_{{ reponse.id }}">
+                                <label for="reponse_{{ question.id }}_{{ reponse.id }}">{{ reponse.reponse }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="submit-btn">Soumettre mes réponses</button>
+        </form>
+    </div>
+
+    <!-- Sound to play when time is up -->
+    <audio id="endSound" src="{{ asset('sounds/times-up.mp3') }}" preload="auto"></audio>
+
+    <script>
+        // Timer script
+        let timeLeft = 20; // Time in seconds (300 seconds = 5 minutes)
+        const timerElement = document.getElementById("time");
+        const endSound = document.getElementById('endSound'); // Get the sound element
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${minutes}m ${seconds}s`;
+
+            if (timeLeft === 10) {
+                // Play sound when there are 10 seconds left
+                endSound.play();
+            }
+
+            if (timeLeft === 0) {
+                clearInterval(timerInterval);
+                // Play sound when time is up
+                endSound.play();
+                alert("Le temps est écoulé!");
+                document.querySelector("form").submit(); // Auto-submit the form after time is up
+            } else {
+                timeLeft--;
+            }
+        }
+
+        // Update the timer every second
+        const timerInterval = setInterval(updateTimer, 1000);
+    </script>
+
+    <style>
+        /* Overall quiz container */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Quiz title */
+        .quiz-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Timer display */
+        .timer {
+            text-align: center;
+            font-size: 1.5rem;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* Question layout */
+        .question {
+            margin-bottom: 20px;
+        }
+
+        /* Question label */
+        .question-label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Answer options */
+        .answers {
+            margin-left: 20px;
+        }
+
+        .answer-option {
+            margin-bottom: 10px;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+{% endblock %}
