@@ -24,12 +24,11 @@ Craftify est une plateforme web communautaire dédiée aux passionnés d'art et 
   - Événements
   - Blogs
   - Formations
-  - Signalements
 
 ## 🔐 Sécurité
 
 - Authentification avec Symfony Security
-- Système de réinitialisation de mot de passe
+- Système de réinitialisation de mot de passe par mail
 - Protection des formulaires avec Google reCAPTCHA v2 et v3
 
 ## 🛠️ Technologies utilisées
