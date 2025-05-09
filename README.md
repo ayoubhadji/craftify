@@ -42,5 +42,3 @@ Craftify est une plateforme web communautaire dédiée aux passionnés d'art et 
 - Bootstrap 5
 - JavaScript
 - reCAPTCHA Google v2 & v3
-
-   cd craftify
