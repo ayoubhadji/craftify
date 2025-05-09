@@ -24,6 +24,7 @@ Craftify est une plateforme web communautaire dédiée aux passionnés d'art et 
   - Événements
   - Blogs
   - Formations
+  - Foire
 
 ## 🔐 Sécurité
 
