@@ -42,3 +42,15 @@ Craftify est une plateforme web communautaire dédiée aux passionnés d'art et 
 - Bootstrap 5
 - JavaScript
 - reCAPTCHA Google v2 & v3
+
+ ## ⚙️ Installation
+- Cloner le projet
+- Installer les dépendances :composer install
+- Créer la base de données :
+          - php bin/console doctrine:database:create
+          - php bin/console doctrine:migrations:migrate
+  - Lancer le serveur local : symfony server:start
+  - si tu a fini stop the server : symfony server:stop
+
+
+
